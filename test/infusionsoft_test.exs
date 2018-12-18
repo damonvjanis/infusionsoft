@@ -1,5 +1,5 @@
 defmodule InfusionsoftTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Infusionsoft
 
   test "greets the world" do
