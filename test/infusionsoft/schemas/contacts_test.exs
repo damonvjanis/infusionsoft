@@ -11,8 +11,11 @@ defmodule Infusionsoft.Schemas.ContactsTest do
     assert Contacts.common_to_rest_downcase() != Contacts.common_to_rest()
     assert map_size(Contacts.common_to_rest_downcase()) == map_size(Contacts.common_to_rest())
 
-    assert Contacts.common_to_rest_downcase() |> Map.keys() ==
-             Contacts.common_to_rest() |> Map.keys() |> Enum.map(&String.downcase/1)
+    assert Contacts.common_to_rest_downcase() |> Map.keys() |> Enum.sort() ==
+             Contacts.common_to_rest()
+             |> Map.keys()
+             |> Enum.map(&String.downcase/1)
+             |> Enum.sort()
   end
 
   test "rest_to_common" do
@@ -28,8 +31,8 @@ defmodule Infusionsoft.Schemas.ContactsTest do
     assert Contacts.common_to_xml_downcase() != Contacts.common_to_xml()
     assert map_size(Contacts.common_to_xml_downcase()) == map_size(Contacts.common_to_xml())
 
-    assert Contacts.common_to_xml_downcase() |> Map.keys() ==
-             Contacts.common_to_xml() |> Map.keys() |> Enum.map(&String.downcase/1)
+    assert Contacts.common_to_xml_downcase() |> Map.keys() |> Enum.sort() ==
+             Contacts.common_to_xml() |> Map.keys() |> Enum.map(&String.downcase/1) |> Enum.sort()
   end
 
   test "xml_to_common" do
