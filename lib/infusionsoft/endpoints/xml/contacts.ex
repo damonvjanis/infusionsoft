@@ -4,9 +4,6 @@ defmodule Infusionsoft.Endpoints.XML.Contacts do
 
   A few endpoints that are available in the API documentation have not been implemented,
   but the function names have been included in comments.
-
-  This module is included in the documentation in case you want to bypass the conveniencies
-  of working with display names and just interact with the raw XML API.
   """
 
   alias Infusionsoft.Endpoints.XML.Helpers
