@@ -44,3 +44,4 @@ However, if you want to directly access the REST or XML functions, you can find 
 
 - Find and add all of the REST and Common names for the `Infusionsoft.Schemas.Contacts` module that map to the XML fields.
 - Build out the REST functions for Contacts
+- Write tests for some of the exisiting modules
