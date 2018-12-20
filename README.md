@@ -39,3 +39,8 @@ be found at [https://hexdocs.pm/infusionsoft](https://hexdocs.pm/infusionsoft).
 The API is designed so that you can access everything through the `Infusionsoft` module using display names instead of worrying about which API you are using.
 
 However, if you want to directly access the REST or XML functions, you can find them documented in the `Infusionsoft.Endpoints.REST.<object_type>` or `Infusionsoft.Endpoints.XML.<object_type>` modules.
+
+## TO-DO's:
+
+- Find and add all of the REST and Common names for the `Infusionsoft.Schemas.Contacts` module that map to the XML fields.
+- Build out the REST functions for Contacts
