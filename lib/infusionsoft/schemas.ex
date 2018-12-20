@@ -1,11 +1,11 @@
 defmodule Infusionsoft.Schemas do
-  @moduledoc """
-  Provides functions for transforming field names.
+  @moduledoc false
 
-  The "to" functions take lists of Common names and turn them into REST or XML names.
-
-  The "from" functions take lists of REST or XML names and turn them into Common names.
-  """
+  # Provides functions for transforming field names.
+  #
+  # The "to" functions take lists of Common names and turn them into REST or XML names.
+  #
+  # The "from" functions take lists of REST or XML names and turn them into Common names.
 
   alias Infusionsoft.Schemas.REST
   alias Infusionsoft.Schemas.XML
@@ -41,6 +41,26 @@ defmodule Infusionsoft.Schemas do
     do: {:error, ~s(The type "#{type}" is invalid)}
 
   @doc """
+  Takes a map of key / value pairs with REST name keys and returns the map with Common name keys.
+
+  Names that aren't in the standard set of REST names will be treated as custom field names.
+
+  Names that don't match anything trigger an error showing all the names that didn't match.
+  """
+  @spec keys_to_rest(map(), String.t(), :contacts) :: {:ok, map()} | {:error, binary()}
+  def keys_to_rest(map, token, :contacts) do
+    pairs = Enum.map(map, fn {k, v} -> {to_rest([k], token, :contacts), v} end)
+
+    case Enum.filter(pairs, fn {{status, _}, _} -> status == :error end) do
+      [] ->
+        {:ok, Enum.into(pairs, %{}, fn {{_, [k]}, v} -> {k, v} end)}
+
+      errors ->
+        {:error, errors |> Enum.map(fn {{_, message}, _} -> message end) |> Enum.join(", ")}
+    end
+  end
+
+  @doc """
   Takes a list of REST names and returns Common names.
 
   Names that aren't in the standard set of REST names will be treated as custom field names.
@@ -63,6 +83,26 @@ defmodule Infusionsoft.Schemas do
 
   def from_rest(names, _token, type) when is_list(names),
     do: {:error, ~s(The type "#{type}" is invalid)}
+
+  @doc """
+  Takes a map of key / value pairs with Common name keys and returns the map with REST name keys.
+
+  Names that aren't in the standard set of Common names will be treated as custom field names.
+
+  Names that don't match anything trigger an error showing all the names that didn't match.
+  """
+  @spec keys_from_rest(map(), String.t(), :contacts) :: {:ok, map()} | {:error, binary()}
+  def keys_from_rest(map, token, :contacts) do
+    pairs = Enum.map(map, fn {k, v} -> {from_rest([k], token, :contacts), v} end)
+
+    case Enum.filter(pairs, fn {{status, _}, _} -> status == :error end) do
+      [] ->
+        {:ok, Enum.into(pairs, %{}, fn {{_, [k]}, v} -> {k, v} end)}
+
+      errors ->
+        {:error, errors |> Enum.map(fn {{_, message}, _} -> message end) |> Enum.join(", ")}
+    end
+  end
 
   @doc """
   Takes a list of Common names and returns XML names.
@@ -95,6 +135,26 @@ defmodule Infusionsoft.Schemas do
     do: {:error, ~s(The type "#{type}" is invalid)}
 
   @doc """
+  Takes a map of key / value pairs with XML name keys and returns the map with Common name keys.
+
+  Names that aren't in the standard set of XML names will be treated as custom field names.
+
+  Names that don't match anything trigger an error showing all the names that didn't match.
+  """
+  @spec keys_to_xml(map(), String.t(), :contacts) :: {:ok, map()} | {:error, binary()}
+  def keys_to_xml(map, token, :contacts) do
+    pairs = Enum.map(map, fn {k, v} -> {to_xml([k], token, :contacts), v} end)
+
+    case Enum.filter(pairs, fn {{status, _}, _} -> status == :error end) do
+      [] ->
+        {:ok, Enum.into(pairs, %{}, fn {{_, [k]}, v} -> {k, v} end)}
+
+      errors ->
+        {:error, errors |> Enum.map(fn {{_, message}, _} -> message end) |> Enum.join(", ")}
+    end
+  end
+
+  @doc """
   Takes a list of XML names and returns Common names.
 
   Names that aren't in the standard set of XML names will be treated as custom field names.
@@ -117,4 +177,24 @@ defmodule Infusionsoft.Schemas do
 
   def from_xml(names, _token, type) when is_list(names),
     do: {:error, ~s(The type "#{type}" is invalid)}
+
+  @doc """
+  Takes a map of key / value pairs with Common name keys and returns the map with XML name keys.
+
+  Names that aren't in the standard set of Common names will be treated as custom field names.
+
+  Names that don't match anything trigger an error showing all the names that didn't match.
+  """
+  @spec keys_from_xml(map(), String.t(), :contacts) :: {:ok, map()} | {:error, binary()}
+  def keys_from_xml(map, token, :contacts) do
+    pairs = Enum.map(map, fn {k, v} -> {from_xml([k], token, :contacts), v} end)
+
+    case Enum.filter(pairs, fn {{status, _}, _} -> status == :error end) do
+      [] ->
+        {:ok, Enum.into(pairs, %{}, fn {{_, [k]}, v} -> {k, v} end)}
+
+      errors ->
+        {:error, errors |> Enum.map(fn {{_, message}, _} -> message end) |> Enum.join(", ")}
+    end
+  end
 end
