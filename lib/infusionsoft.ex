@@ -1,6 +1,6 @@
 defmodule Infusionsoft do
   @moduledoc """
-  Documentation for Infusionsoft.
+  Functions for interacting with Infusionsoft API.
 
   One important thing to note is that if you have multiple custom fields with the same name,
   even if the capitalization is different, things may not work the way you expect.
@@ -13,62 +13,45 @@ defmodule Infusionsoft do
 
   alias Infusionsoft.Endpoints.XML.Contacts, as: ContactsXML
   alias Infusionsoft.Endpoints.XML.Funnel, as: FunnelXML
+  alias Infusionsoft.Schemas
 
+  defp check_token(nil), do: {:error, "Invalid token: nil"}
+  defp check_token(""), do: {:error, "Invalid token: blank string"}
+
+  defp check_token(token) when not is_binary(token),
+    do: {:error, "Invalid token: #{inspect(token)}"}
+
+  defp check_token(token), do: {:ok, token}
+
+  @doc """
+  Creates a contact record in Infusionsoft without doing a dupe check.
+
+  ## Examples
+
+      iex> Infusionsoft.create_contact(%{"First Name" => "Damon"}, "test_token")
+      {:ok, 12345}
+  """
+  @spec create_contact(map(), String.t()) :: {:ok, integer()} | {:error, binary()}
   def create_contact(data, token) do
-    ContactsXML.create(data, token)
+    with {:ok, token} <- check_token(token),
+         {:ok, data} <- Schemas.keys_to_xml(data, token, :contacts) do
+      ContactsXML.create(data, token)
+    end
   end
 
-  def create_with_dupe_check(data, token, check_type) do
-    ContactsXML.create_with_dupe_check(data, token, check_type)
-  end
+  @doc """
+  Achieves a goal for a contact, with a specific integration name and call name.
 
-  def retrieve(id, fields, token) do
-    ContactsXML.retrieve(id, fields, token)
-  end
+  ## Examples
 
-  def update(id, data, token) do
-    ContactsXML.update(id, data, token)
-  end
-
-  def merge(id, id_duplicate, token) do
-    ContactsXML.merge(id, id_duplicate, token)
-  end
-
-  def search_by_email(email, fields, token) do
-    ContactsXML.search_by_email(email, fields, token)
-  end
-
-  def add_tag(contact_id, tag_id, token) do
-    ContactsXML.add_tag(contact_id, tag_id, token)
-  end
-
-  def remove_tag(contact_id, tag_id, token) do
-    ContactsXML.remove_tag(contact_id, tag_id, token)
-  end
-
-  @spec link(any(), any(), any(), any()) ::
-          {:error, any()}
-          | {:ok,
-             false
-             | nil
-             | true
-             | binary()
-             | [false | nil | true | binary() | number()]
-             | number()
-             | map()}
-  def link(contact_id_1, contact_id_2, link_type_id, token) do
-    ContactsXML.link(contact_id_1, contact_id_2, link_type_id, token)
-  end
-
-  def unlink(contact_id_1, contact_id_2, link_type_id, token) do
-    ContactsXML.unlink(contact_id_1, contact_id_2, link_type_id, token)
-  end
-
-  def list_linked_contacts(id, token) do
-    ContactsXML.list_linked_contacts(id, token)
-  end
-
+      iex> Infusionsoft.achieve_goal(12345, "test_token")
+      {:ok, [...]}
+  """
+  @spec achieve_goal(integer(), String.t(), String.t(), String.t()) ::
+          {:ok, list()} | {:error, String.t()}
   def achieve_goal(contact_id, integration_name, call_name, token) do
-    FunnelXML.achieve_goal(contact_id, integration_name, call_name, token)
+    with {:ok, token} <- check_token(token) do
+      FunnelXML.achieve_goal(contact_id, integration_name, call_name, token)
+    end
   end
 end
