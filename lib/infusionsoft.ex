@@ -40,6 +40,24 @@ defmodule Infusionsoft do
   end
 
   @doc """
+  Retrieves a contact record from Infusionsoft.
+
+  ## Examples
+
+      iex> Infusionsoft.retrieve_contact(12345, ["First Name", "Last Name"], "test_token")
+      {:ok, %{"First Name" => "Damon", "Last Name" => "Janis"}}
+  """
+  @spec retrieve_contact(integer(), [String.t()], String.t()) ::
+          {:ok, map()} | {:error, String.t()}
+  def retrieve_contact(id, fields, token) do
+    with {:ok, token} <- check_token(token),
+         {:ok, fields} <- Infusionsoft.Schemas.to_xml(fields, token, :contacts),
+         {:ok, contact} <- ContactsXML.retrieve(id, fields, token) do
+      Schemas.keys_from_xml(contact, token, :contacts)
+    end
+  end
+
+  @doc """
   Achieves a goal for a contact, with a specific integration name and call name.
 
   ## Examples
