@@ -4,8 +4,8 @@ defmodule Infusionsoft.MixProject do
   def project do
     [
       app: :infusionsoft,
-      version: "0.1.1",
-      elixir: "~> 1.0",
+      version: "0.2.0",
+      elixir: "~> 1.2",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       description: description(),
@@ -27,7 +27,7 @@ defmodule Infusionsoft.MixProject do
   defp deps do
     [
       {:xmlrpc, "~> 1.0"},
-      {:httpoison, "~> 1.4"},
+      {:httpoison, "~> 1.0"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end
@@ -38,7 +38,7 @@ defmodule Infusionsoft.MixProject do
 
   defp package() do
     [
-      files: ~w(lib .formatter.exs mix.exs README* LICENSE*),
+      files: ~w(lib .formatter.exs mix.exs README* LICENSE* CHANGELOG*),
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/damonvjanis/infusionsoft"}
     ]
