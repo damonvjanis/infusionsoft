@@ -51,13 +51,23 @@ defmodule Infusionsoft.Schemas.XML.Contacts do
     if value do
       {:ok, value}
     else
-      get_custom_field(name, token, app)
+      if String.first(name) == "_" do
+        get_custom_field_from(name, token, app)
+      else
+        get_custom_field_to(name, token, app)
+      end
     end
   end
 
-  defp get_custom_field(name, token, app) do
+  defp get_custom_field_to(name, token, app) do
     with {:ok, field} <- ContactCustomFields.lookup(ContactCustomFields, name, token, app) do
       {:ok, "_" <> field["Name"]}
+    end
+  end
+
+  defp get_custom_field_from(name, token, app) do
+    with {:ok, field} <- ContactCustomFields.lookup(ContactCustomFields, name, token, app) do
+      {:ok, field["Label"]}
     end
   end
 end

@@ -17,7 +17,8 @@ defmodule Infusionsoft.Caches.ContactCustomFields do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
-  @spec lookup(atom(), String.t(), String.t(), nil | String.t()) :: {:ok | :error, String.t()}
+  @spec lookup(atom(), String.t(), String.t(), nil | String.t()) ::
+          {:ok, map()} | {:error, binary()}
   def lookup(pid, name, token, app) do
     GenServer.call(pid, {:lookup, token, app, name})
   end
@@ -37,8 +38,7 @@ defmodule Infusionsoft.Caches.ContactCustomFields do
     case state[token] do
       nil ->
         with {:ok, fields} <- get_fields(token, app) do
-          state =
-            Map.put(state, token, %{token: token, app: app, custom_fields: fields})
+          state = Map.put(state, token, %{token: token, app: app, custom_fields: fields})
 
           {:reply, check_field(fields, name), state}
         else
@@ -95,11 +95,18 @@ defmodule Infusionsoft.Caches.ContactCustomFields do
     return_fields = ["GroupId", "Id", "Label", "Name"]
 
     with {:ok, fields} <- Data.query_table(query, "DataFormField", return_fields, token, app) do
-      {:ok, group_by_name(fields)}
+      # Duplicate the field list to be grouped by Name and again by Label
+      # so that access is available translating from Common to XML and vice versa
+      {:ok, Map.merge(group_by_name(fields), group_by_label(fields))}
     end
   end
 
   defp group_by_name(fields) do
+    # Add underscore so that XML name will match
+    Enum.group_by(fields, fn f -> "_" <> String.downcase(f["Name"]) end)
+  end
+
+  defp group_by_label(fields) do
     Enum.group_by(fields, fn f -> String.downcase(f["Label"]) end)
   end
 
