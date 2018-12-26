@@ -1,6 +1,6 @@
 defmodule Infusionsoft.Endpoints.XML.Data do
   @moduledoc """
-  Provides the raw endpoints to Infusionsoft's XML API for Funnel actions.
+  Provides the raw endpoints to Infusionsoft's XML API for Data actions.
   """
   alias Infusionsoft.Endpoints.XML.Helpers
 

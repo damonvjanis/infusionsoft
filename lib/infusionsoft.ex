@@ -64,7 +64,7 @@ defmodule Infusionsoft do
   ## Examples
 
       iex> Infusionsoft.update_contact(12345, %{"Nickname" => "Dame"}, "test_token")
-      {:ok, %{"First Name" => "Damon", "Last Name" => "Janis"}}
+      {:ok, 12345}
   """
   @spec update_contact(integer(), map(), String.t(), nil | String.t()) ::
           {:ok, integer()} | {:error, String.t()}
