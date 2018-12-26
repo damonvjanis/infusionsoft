@@ -1,22 +1,29 @@
 # Infusionsoft
 
-This package provides a complete wrapper for the Infusionsoft API.
+## Introduction
 
-The intention is to abstract the nuances of Infusionsoft's REST and XMLRPC API's so that the developer doesn't have to worry about the differences.
+So much more than a wrapper!
 
-The two API's have different field names, so in most other libraries the developer has to be familiar with the names and strucures of each API to get things to work.
+The Infusionsoft API is robust but there are a lot of quirks that the developer has to accommodate for. As an example, the contact field “First Name” that you see in the application has a backend name of “FirstName” in the XML API and a backend name of “given_name” in the REST API.
 
-Instead, we use the _display_ field names and the library translates into the correct names and structures depending on the API that is being used.
+This package intends to abstract the things that make the Infusionsoft API challenging to work with, and provide a unified interface for developers so that developers can leverage both the XML API and the REST API without being concerned with the details of each.
 
-For example, the field name `First Name` (which is a display name) would be changed to `FirstName` if the request used the XMLRPC API and `given_name` if the request used the REST api.
+The package is very much a work in progress, so here is what it currently does and then a list of the goals yet to be accomplished.
 
-On this initial release (0.1.0), things are still pretty rough and will change very rapidly.
+### Currently available:
 
-For example, the main module Infusionsoft has functions that only use the XMLRPC API and expect the developer to use the appropriate field names.
+- Through the main module, Infusionsoft, a few Contact functions as well as the ability to fire an “API Goal” are exposed.
+- All of the raw XML API endpoints for their respective calls are available in the modules `Infusionsoft.Endpoints.XML.Contacts` and `Infusionsoft.Endpoints.XML.Funnel`. There is also a raw call for querying a data table through `Infusionsoft.Endpoints.XML.Data`, which is one of the most useful raw XML calls.
+- OAuth2 tokens are supported and are the recommended mode of authentication. If you want to use legacy API keys, you can do so on functions that include the option for an `app`. Just use the encrypted key from Infusionsoft and the application name, like `ab123`.
+- Contact custom fields are automatically cached and refreshed every 15 minutes once you've used a call that requires accessing custom fields. This allows the developer to use the display name for custom fields, instead of worrying about what the exact API names are.
 
-Documentation is a work in progess, although some of the lower level API's have better tests and documentations.
+### Goals yet to be accomplished:
 
-My intention was to push out an initial release very early in the development process so that it could be used in some projects I have going on currently, and then expand in improve the package as my spare time allows.
+- Provide a cache for tag names and ID's, and expose the endpoints to apply and remove tags in the main module.
+- Expose all raw XML and REST endpoints in their respective modules
+- Wrap each raw endpoint with a function in the main `Infusionsoft` module so that display names can be used (and returned), and the developer doesn't need to worry about which API the function is using.
+- Add a rate limiter that can be toggled on or off with configuration that limits the number of outgoing API calls to be beneath the maximum of 25 calls per second.
+- Provide a host of convenience functions in the main `Infusionsoft` module that don't map exactly to any raw endpoints but represent common needs. For example, a function that retrieves all contacts who have a certain tag applied.
 
 ## Installation
 
@@ -26,7 +33,7 @@ by adding `infusionsoft` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:infusionsoft, "~> 0.1.0"}
+    {:infusionsoft, "~> 0.2.0"}
   ]
 end
 ```
@@ -34,14 +41,39 @@ end
 Documentation can
 be found at [https://hexdocs.pm/infusionsoft](https://hexdocs.pm/infusionsoft).
 
-## Usage
+## Implementation guide
+The intention of the package is to abstract the nuances of Infusionsoft's REST and XMLRPC API's so that the developer doesn't have to worry about the differences.
 
-The API is designed so that you can access everything through the `Infusionsoft` module using display names instead of worrying about which API you are using.
+The two API's have different field names, so in most other libraries the developer has to be familiar with those names and the strucure of each API to get things to work.
 
-However, if you want to directly access the REST or XML functions, you can find them documented in the `Infusionsoft.Endpoints.REST.<object_type>` or `Infusionsoft.Endpoints.XML.<object_type>` modules.
+In this library, we use the _display_ field names and the library translates into the correct names and structures depending on the API that is being used.
 
-## TO-DO's:
+For example, the field name `First Name` (which is a display name) would be changed to `FirstName` if the request used the XMLRPC API and `given_name` if the request used the REST api. The return values are translated _back_ into display names so in your application code you can always work with the display names.
 
-- Find and add all of the REST and Common names for the `Infusionsoft.Schemas.Contacts` module that map to the XML fields.
-- Build out the REST functions for Contacts
-- Write tests for some of the exisiting modules
+For example, to retrieve a contact record, you would call the following function:
+
+```
+contact_id = 12345
+fields = ["First Name", "Last Name", "Some Custom Field"]
+
+Infusionsosft.get_contact(contact_id, fields, "your_oauth_token")
+```
+
+and it would return something like this:
+```
+%{
+  "First Name" => "John",
+  "Last Name" => "Doe",
+  "Some Custom Field" => "Custom Field Value"
+}
+```
+
+To obtain an OAuth token, read Infusionsoft's guide [here](https://developer.infusionsoft.com/getting-started-oauth-keys/).
+
+In this release (0.2.0), we've expanded the XML part of the API and added some functions to the main Infusionosft module. We've also added support for the legacy Encrypted Key method of API calls for XML-RPC calls.
+
+In order to use the encrypted key authentication method, you have to access to the XML functions directly or pass the optional `app` parameter to the functions in the main module. For example, calling `Infusionsoft.Endpoints.XML.Funnel.achieve_goal/5` with `token` being your encrypted key and `app` being your Infusionsoft application name (like `"ab123"`).
+
+If you discover this library and are interested in using it, please contact me at damonvjanis@gmail.com so I can give you more information on the status of the project.
+
+Documentation and tests are a work in progess, expect more of that to come.
