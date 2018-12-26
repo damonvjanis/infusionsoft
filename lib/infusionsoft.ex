@@ -31,11 +31,12 @@ defmodule Infusionsoft do
       iex> Infusionsoft.create_contact(%{"First Name" => "Damon"}, "test_token")
       {:ok, 12345}
   """
-  @spec create_contact(map(), String.t()) :: {:ok, integer()} | {:error, binary()}
-  def create_contact(data, token) do
+  @spec create_contact(map(), String.t(), nil | String.t()) ::
+          {:ok, integer()} | {:error, binary()}
+  def create_contact(data, token, app \\ nil) do
     with {:ok, token} <- check_token(token),
-         {:ok, data} <- Schemas.keys_to_xml(data, token, :contacts) do
-      ContactsXML.create(data, token)
+         {:ok, data} <- Schemas.keys_to_xml(data, token, app, :contacts) do
+      ContactsXML.create(data, token, app)
     end
   end
 
@@ -47,11 +48,11 @@ defmodule Infusionsoft do
       iex> Infusionsoft.achieve_goal(12345, "test_token")
       {:ok, [...]}
   """
-  @spec achieve_goal(integer(), String.t(), String.t(), String.t()) ::
+  @spec achieve_goal(integer(), String.t(), String.t(), String.t(), nil | String.t()) ::
           {:ok, list()} | {:error, String.t()}
-  def achieve_goal(contact_id, integration_name, call_name, token) do
+  def achieve_goal(contact_id, integration_name, call_name, token, app \\ nil) do
     with {:ok, token} <- check_token(token) do
-      FunnelXML.achieve_goal(contact_id, integration_name, call_name, token)
+      FunnelXML.achieve_goal(contact_id, integration_name, call_name, token, app)
     end
   end
 end

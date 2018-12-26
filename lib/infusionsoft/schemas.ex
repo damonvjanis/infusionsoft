@@ -128,10 +128,12 @@ defmodule Infusionsoft.Schemas do
       iex> Infusionsoft.Schemas.to_xml(["Not a valid name"], "test_token", :contacts)
       {:error, "The name \\"Not a valid name\\" is not a standard or custom contact field"}
   """
-  @spec to_xml([String.t()], String.t(), atom()) :: {:ok, list()} | {:error, String.t()}
-  def to_xml(names, token, :contacts) when is_list(names), do: XML.Contacts.to(names, token)
+  @spec to_xml([String.t()], String.t(), nil | String.t(), atom()) ::
+          {:ok, list()} | {:error, String.t()}
+  def to_xml(names, token, app, :contacts) when is_list(names),
+    do: XML.Contacts.to(names, token, app)
 
-  def to_xml(names, _token, type) when is_list(names),
+  def to_xml(names, _token, _app, type) when is_list(names),
     do: {:error, ~s(The type "#{type}" is invalid)}
 
   @doc """
@@ -141,9 +143,10 @@ defmodule Infusionsoft.Schemas do
 
   Names that don't match anything trigger an error showing all the names that didn't match.
   """
-  @spec keys_to_xml(map(), String.t(), :contacts) :: {:ok, map()} | {:error, binary()}
-  def keys_to_xml(map, token, :contacts) do
-    pairs = Enum.map(map, fn {k, v} -> {to_xml([k], token, :contacts), v} end)
+  @spec keys_to_xml(map(), String.t(), nil | String.t(), :contacts) ::
+          {:ok, map()} | {:error, binary()}
+  def keys_to_xml(map, token, app, :contacts) do
+    pairs = Enum.map(map, fn {k, v} -> {to_xml([k], token, app, :contacts), v} end)
 
     case Enum.filter(pairs, fn {{status, _}, _} -> status == :error end) do
       [] ->
@@ -172,10 +175,12 @@ defmodule Infusionsoft.Schemas do
       iex> Infusionsoft.Schemas.from_xml(["Not a valid name"], "test_token", :contacts)
       {:error, "The name \\"Not a valid name\\" is not a standard or custom contact field"}
   """
-  @spec from_xml([String.t()], String.t(), atom()) :: {:ok, list()} | {:error, String.t()}
-  def from_xml(names, token, :contacts) when is_list(names), do: XML.Contacts.from(names, token)
+  @spec from_xml([String.t()], String.t(), nil | String.t(), atom()) ::
+          {:ok, list()} | {:error, String.t()}
+  def from_xml(names, token, app, :contacts) when is_list(names),
+    do: XML.Contacts.from(names, token, app)
 
-  def from_xml(names, _token, type) when is_list(names),
+  def from_xml(names, _token, _app, type) when is_list(names),
     do: {:error, ~s(The type "#{type}" is invalid)}
 
   @doc """
@@ -185,9 +190,10 @@ defmodule Infusionsoft.Schemas do
 
   Names that don't match anything trigger an error showing all the names that didn't match.
   """
-  @spec keys_from_xml(map(), String.t(), :contacts) :: {:ok, map()} | {:error, binary()}
-  def keys_from_xml(map, token, :contacts) do
-    pairs = Enum.map(map, fn {k, v} -> {from_xml([k], token, :contacts), v} end)
+  @spec keys_from_xml(map(), String.t(), nil | String.t(), atom()) ::
+          {:ok, map()} | {:error, binary()}
+  def keys_from_xml(map, token, app, :contacts) do
+    pairs = Enum.map(map, fn {k, v} -> {from_xml([k], token, app, :contacts), v} end)
 
     case Enum.filter(pairs, fn {{status, _}, _} -> status == :error end) do
       [] ->
