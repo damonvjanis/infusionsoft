@@ -41,15 +41,13 @@ defmodule Infusionsoft.Schemas.REST.Contacts do
     end
   end
 
-  defp get_name(name, map, token, opts \\ []) do
+  defp get_name(name, map, _token, opts \\ []) do
     opts = Keyword.merge([downcase: false], opts)
     value = if(Keyword.get(opts, :downcase), do: map[downcase(name)], else: map[name])
 
     if value do
       {:ok, value}
     else
-      query = %{}
-      # Infusionsoft.XML.DataService.query(token, "DataFormField", query, return_fields)
       {:error, ~s[The name "#{name}" is not a standard or custom contact field]}
     end
   end
