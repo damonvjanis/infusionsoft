@@ -8,8 +8,7 @@ defmodule Infusionsoft.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
-      # Starts a worker by calling: Infusionsoft.Worker.start_link(arg)
-      # {Infusionsoft.Worker, arg},
+      Infusionsoft.Caches.ContactCustomFields
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
