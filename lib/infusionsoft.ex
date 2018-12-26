@@ -48,13 +48,30 @@ defmodule Infusionsoft do
       iex> Infusionsoft.retrieve_contact(12345, ["First Name", "Last Name"], "test_token")
       {:ok, %{"First Name" => "Damon", "Last Name" => "Janis"}}
   """
-  @spec retrieve_contact(integer(), [String.t()], String.t()) ::
+  @spec retrieve_contact(integer(), [String.t()], String.t(), nil | String.t()) ::
           {:ok, map()} | {:error, String.t()}
-  def retrieve_contact(id, fields, token) do
+  def retrieve_contact(id, fields, token, app \\ nil) do
     with {:ok, token} <- check_token(token),
-         {:ok, fields} <- Infusionsoft.Schemas.to_xml(fields, token, :contacts),
-         {:ok, contact} <- ContactsXML.retrieve(id, fields, token) do
-      Schemas.keys_from_xml(contact, token, :contacts)
+         {:ok, fields} <- Infusionsoft.Schemas.to_xml(fields, token, app, :contacts),
+         {:ok, contact} <- ContactsXML.retrieve(id, fields, token, app) do
+      Schemas.keys_from_xml(contact, token, app, :contacts)
+    end
+  end
+
+  @doc """
+  Updates a contact record from Infusionsoft.
+
+  ## Examples
+
+      iex> Infusionsoft.update_contact(12345, %{"Nickname" => "Dame"}, "test_token")
+      {:ok, %{"First Name" => "Damon", "Last Name" => "Janis"}}
+  """
+  @spec update_contact(integer(), map(), String.t(), nil | String.t()) ::
+          {:ok, integer()} | {:error, String.t()}
+  def update_contact(id, data, token, app \\ nil) do
+    with {:ok, token} <- check_token(token),
+         {:ok, data} <- Infusionsoft.Schemas.keys_to_xml(data, token, app, :contacts) do
+      ContactsXML.update(id, data, token, app)
     end
   end
 
