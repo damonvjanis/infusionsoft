@@ -86,7 +86,7 @@ defmodule Infusionsoft.Caches.ContactCustomFields do
   end
 
   defp enabled?() do
-    Application.get_env(:infusionsoft, __MODULE__)[:enabled]
+    not (Application.get_env(:infusionsoft, __MODULE__)[:enabled] == false)
   end
 
   defp get_fields(token, app) do
