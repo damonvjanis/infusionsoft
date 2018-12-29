@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+0.2.1
+-----
+
+ *  Recursive helper function added to `Infusionsoft.Endpoints.XML.Data` to allow returning _all_ results instead of by page.
+
 0.2.0
 -----
 
