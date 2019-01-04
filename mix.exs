@@ -4,7 +4,7 @@ defmodule Infusionsoft.MixProject do
   def project do
     [
       app: :infusionsoft,
-      version: "0.2.1",
+      version: "0.3.0",
       elixir: "~> 1.2",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
