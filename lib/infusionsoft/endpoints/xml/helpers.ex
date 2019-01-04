@@ -54,8 +54,10 @@ defmodule Infusionsoft.Endpoints.XML.Helpers do
   defp get_param_from_body(%{param: param}), do: {:ok, param}
   defp get_param_from_body(body), do: {:error, "Unexpected response: #{inspect(body)}"}
 
-  @spec build_params(list(), String.t(), nil | String.t()) :: list()
+  @spec build_params(list() | nil, String.t(), nil | String.t()) :: list()
   def build_params(params, token, app)
+  def build_params(nil, _token, nil), do: [""]
   def build_params(params, _token, nil), do: ["" | params]
+  def build_params(nil, token, _app), do: [token]
   def build_params(params, token, _app), do: [token | params]
 end
