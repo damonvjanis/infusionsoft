@@ -104,7 +104,7 @@ defmodule Infusionsoft do
 
   ## Examples
 
-      iex> Infusionsoft.query_table(%{"First Name" => "Damon"}, "Contact", ["Id"] "test_token")
+      iex> Infusionsoft.query_table(%{"First Name" => "Damon"}, "Contact", ["Id"], "test_token", nil)
       {:ok, [%{"Id" => 12345}, %{"Id" => 67890}]}
   """
   @spec query_table(map(), String.t(), [String.t()], String.t(), nil | String.t(), keyword()) ::
