@@ -110,10 +110,14 @@ defmodule Infusionsoft do
   @spec query_table(map(), String.t(), [String.t()], String.t(), nil | String.t(), keyword()) ::
           {:ok, list()} | {:error, binary()}
   def query_table(data, table, fields, token, app, opts \\ []) do
-    with {:ok, token} <- check_token(token),
-         {:ok, data} <- Schemas.keys_to_xml(data, token, app, :contacts),
-         {:ok, fields} <- Schemas.to_xml(fields, token, app, :contacts) do
-      DataXML.query_all_from_table(data, table, fields, token, app, opts)
+    if table == "Contact" do
+      with {:ok, token} <- check_token(token),
+           {:ok, data} <- Schemas.keys_to_xml(data, token, app, :contacts),
+           {:ok, fields} <- Schemas.to_xml(fields, token, app, :contacts) do
+        DataXML.query_all_from_table(data, table, fields, token, app, opts)
+      end
+    else
+      {:error, "Only queries to the \"Contact\" table are currently supported"}
     end
   end
 end
