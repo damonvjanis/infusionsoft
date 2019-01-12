@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+0.3.0
+-----
+
+ *  Added a lot of new endpoints in `Infusionsoft.Endpoints.XML.Data`
+ *  Added a new function in the main `Infusionsoft` module to get access to querying all results of a table. This works fully on the "Contact" table because of the field name caching, but will probably break on other tables for now.
+
 0.2.1
 -----
 

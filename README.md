@@ -12,9 +12,9 @@ The package is very much a work in progress, so here is what it currently does a
 
 ### Currently available:
 
-- Through the main module, Infusionsoft, a few Contact functions as well as the ability to fire an “API Goal” are exposed.
-- All of the raw XML API endpoints for their respective calls are available in the modules `Infusionsoft.Endpoints.XML.Contacts` and `Infusionsoft.Endpoints.XML.Funnel`. There is also a raw call for querying a data table through `Infusionsoft.Endpoints.XML.Data`, which is one of the most useful raw XML calls.
-- OAuth2 tokens are supported and are the recommended mode of authentication. If you want to use legacy API keys, you can do so on functions that include the option for an `app`. Just use the encrypted key from Infusionsoft and the application name, like `ab123`.
+- Through the main module, `Infusionsoft`, there are a handful of functions available to work with contacts, fire API goals, and query data tables (one of the most useful).
+- Most of the XML endpoints have been wrapped in the lower level `Infusionsoft.Endpoints.XML` modules. You have to use the XML names when you access these modules, but it provides a lot of raw access.
+- OAuth2 tokens are supported and are the recommended mode of authentication. If you want to use legacy API keys, you can do so on functions that accept an `app` argument. Just use the encrypted key from Infusionsoft for `token`, and use the Infusionsoft application name, like `ab123` for `app`.
 - Contact custom fields are automatically cached and refreshed every 15 minutes once you've used a call that requires accessing custom fields. This allows the developer to use the display name for custom fields, instead of worrying about what the exact API names are.
 
 ### Goals yet to be accomplished:
