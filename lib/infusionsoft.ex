@@ -13,6 +13,7 @@ defmodule Infusionsoft do
 
   alias Infusionsoft.Endpoints.XML.Contacts, as: ContactsXML
   alias Infusionsoft.Endpoints.XML.Funnel, as: FunnelXML
+  alias Infusionsoft.Endpoints.XML.Data, as: DataXML
   alias Infusionsoft.Schemas
 
   defp check_token(nil), do: {:error, "Invalid token: nil"}
@@ -52,7 +53,7 @@ defmodule Infusionsoft do
           {:ok, map()} | {:error, String.t()}
   def retrieve_contact(id, fields, token, app \\ nil) do
     with {:ok, token} <- check_token(token),
-         {:ok, fields} <- Infusionsoft.Schemas.to_xml(fields, token, app, :contacts),
+         {:ok, fields} <- Schemas.to_xml(fields, token, app, :contacts),
          {:ok, contact} <- ContactsXML.retrieve(id, fields, token, app) do
       Schemas.keys_from_xml(contact, token, app, :contacts)
     end
@@ -70,7 +71,7 @@ defmodule Infusionsoft do
           {:ok, integer()} | {:error, String.t()}
   def update_contact(id, data, token, app \\ nil) do
     with {:ok, token} <- check_token(token),
-         {:ok, data} <- Infusionsoft.Schemas.keys_to_xml(data, token, app, :contacts) do
+         {:ok, data} <- Schemas.keys_to_xml(data, token, app, :contacts) do
       ContactsXML.update(id, data, token, app)
     end
   end
@@ -88,6 +89,31 @@ defmodule Infusionsoft do
   def achieve_goal(contact_id, integration_name, call_name, token, app \\ nil) do
     with {:ok, token} <- check_token(token) do
       FunnelXML.achieve_goal(contact_id, integration_name, call_name, token, app)
+    end
+  end
+
+  @doc """
+  Gets all of the records from a table in Infusionsoft.
+
+  See the available tables here:
+  https://developer.infusionsoft.com/docs/table-schema/
+
+  Available options for `opts` param:
+  order_by - defualts to Id
+  ascending - defaults to false
+
+  ## Examples
+
+      iex> Infusionsoft.query_table(%{"First Name" => "Damon"}, "Contact", ["Id"] "test_token")
+      {:ok, [%{"Id" => 12345}, %{"Id" => 67890}]}
+  """
+  @spec query_table(map(), String.t(), [String.t()], String.t(), nil | String.t(), keyword()) ::
+          {:ok, list()} | {:error, binary()}
+  def query_table(data, table, fields, token, app, opts \\ []) do
+    with {:ok, token} <- check_token(token),
+         {:ok, data} <- Schemas.keys_to_xml(data, token, app, :contacts),
+         {:ok, fields} <- Schemas.to_xml(fields, token, app, :contacts) do
+      DataXML.query_all_from_table(data, table, fields, token, app, opts)
     end
   end
 end
