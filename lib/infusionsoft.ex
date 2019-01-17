@@ -11,7 +11,7 @@ defmodule Infusionsoft do
   may not work the way you expect.
   """
 
-  alias Infusionsoft.Endpoints.XML.Contacts, as: ContactsXML
+  alias Infusionsoft.Endpoints.XML.Contact, as: ContactsXML
   alias Infusionsoft.Endpoints.XML.Funnel, as: FunnelXML
   alias Infusionsoft.Endpoints.XML.Data, as: DataXML
   alias Infusionsoft.Schemas
@@ -37,7 +37,7 @@ defmodule Infusionsoft do
   def create_contact(data, token, app \\ nil) do
     with {:ok, token} <- check_token(token),
          {:ok, data} <- Schemas.keys_to_xml(data, token, app, :contacts) do
-      ContactsXML.create(data, token, app)
+      ContactsXML.create_a_contact(data, token, app)
     end
   end
 
@@ -54,7 +54,7 @@ defmodule Infusionsoft do
   def retrieve_contact(id, fields, token, app \\ nil) do
     with {:ok, token} <- check_token(token),
          {:ok, fields} <- Schemas.to_xml(fields, token, app, :contacts),
-         {:ok, contact} <- ContactsXML.retrieve(id, fields, token, app) do
+         {:ok, contact} <- ContactsXML.retrieve_a_contact(id, fields, token, app) do
       Schemas.keys_from_xml(contact, token, app, :contacts)
     end
   end
@@ -72,7 +72,7 @@ defmodule Infusionsoft do
   def update_contact(id, data, token, app \\ nil) do
     with {:ok, token} <- check_token(token),
          {:ok, data} <- Schemas.keys_to_xml(data, token, app, :contacts) do
-      ContactsXML.update(id, data, token, app)
+      ContactsXML.update_a_contact(id, data, token, app)
     end
   end
 
@@ -88,7 +88,7 @@ defmodule Infusionsoft do
           {:ok, list()} | {:error, String.t()}
   def achieve_goal(contact_id, integration_name, call_name, token, app \\ nil) do
     with {:ok, token} <- check_token(token) do
-      FunnelXML.achieve_goal(contact_id, integration_name, call_name, token, app)
+      FunnelXML.achieve_a_goal(contact_id, integration_name, call_name, token, app)
     end
   end
 

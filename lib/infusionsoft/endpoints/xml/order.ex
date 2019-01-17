@@ -5,7 +5,7 @@ defmodule Infusionsoft.Endpoints.XML.Order do
   alias Infusionsoft.Endpoints.XML.Helpers
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#order-create-an-order"
-  @spec create_order(
+  @spec create_an_order(
           integer(),
           integer(),
           integer(),
@@ -18,7 +18,7 @@ defmodule Infusionsoft.Endpoints.XML.Order do
           String.t(),
           nil | String.t()
         ) :: {:ok, map()} | {:error, String.t()}
-  def create_order(
+  def create_an_order(
         contact_id,
         card_id,
         plan_id,

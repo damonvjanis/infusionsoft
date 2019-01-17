@@ -1,6 +1,6 @@
-defmodule Infusionsoft.Endpoints.XML.Affiliates do
+defmodule Infusionsoft.Endpoints.XML.Affiliate do
   @moduledoc """
-  Provides the raw endpoints to Infusionsoft's XML API for Affiliates.
+  Provides the raw endpoints to Infusionsoft's XML API for Affiliate.
   """
 
   alias Infusionsoft.Endpoints.XML.Helpers
@@ -47,9 +47,9 @@ defmodule Infusionsoft.Endpoints.XML.Affiliates do
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#affiliate-retrieve-a-summary-of-affiliate-statistics"
-  @spec retrieve_affiliate_summary([integer()], %Date{}, %Date{}, String.t(), nil | String.t()) ::
+  @spec retrieve_summary([integer()], %Date{}, %Date{}, String.t(), nil | String.t()) ::
           {:ok, list()} | {:error, String.t()}
-  def retrieve_affiliate_summary(id_list, start_date, end_date, token, app \\ nil) do
+  def retrieve_summary(id_list, start_date, end_date, token, app \\ nil) do
     start_date = start_to_xml_iso(start_date)
     end_date = end_to_xml_iso(end_date)
 

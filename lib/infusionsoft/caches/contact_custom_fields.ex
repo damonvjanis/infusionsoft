@@ -94,7 +94,8 @@ defmodule Infusionsoft.Caches.ContactCustomFields do
     query = %{"FormID" => -1}
     return_fields = ["GroupId", "Id", "Label", "Name"]
 
-    with {:ok, fields} <- Data.query_table(query, "DataFormField", return_fields, token, app) do
+    with {:ok, fields} <-
+           Data.query_a_data_table(query, "DataFormField", return_fields, token, app) do
       # Duplicate the field list to be grouped by Name and again by Label
       # so that access is available translating from Common to XML and vice versa
       {:ok, Map.merge(group_by_name(fields), group_by_label(fields))}

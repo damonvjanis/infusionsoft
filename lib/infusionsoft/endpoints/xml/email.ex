@@ -5,17 +5,17 @@ defmodule Infusionsoft.Endpoints.XML.Email do
   alias Infusionsoft.Endpoints.XML.Helpers
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#email-opt-in-an-email-address"
-  @spec opt_in(String.t(), String.t(), String.t(), nil | String.t()) ::
+  @spec opt_in_an_email_address(String.t(), String.t(), String.t(), nil | String.t()) ::
           {:ok, boolean()} | {:error, String.t()}
-  def opt_in(email, reason, token, app \\ nil) do
+  def opt_in_an_email_address(email, reason, token, app \\ nil) do
     params = Helpers.build_params([email, reason], token, app)
     Helpers.process_endpoint("APIEmailService.optIn", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#email-opt-out-an-email-address"
-  @spec opt_out(String.t(), String.t(), String.t(), nil | String.t()) ::
+  @spec opt_out_an_email_address(String.t(), String.t(), String.t(), nil | String.t()) ::
           {:ok, boolean()} | {:error, String.t()}
-  def opt_out(email, reason, token, app \\ nil) do
+  def opt_out_an_email_address(email, reason, token, app \\ nil) do
     params = Helpers.build_params([email, reason], token, app)
     Helpers.process_endpoint("APIEmailService.optOut", params, token, app)
   end
@@ -26,15 +26,15 @@ defmodule Infusionsoft.Endpoints.XML.Email do
   Returns an integer value of 0 for opt out / non-marketable / soft bounce / hard bounce,
   1 for single opt-in, or 2 for double opt-in.
   """
-  @spec opt_in_status(String.t(), String.t(), nil | String.t()) ::
+  @spec retrieve_opt_in_status(String.t(), String.t(), nil | String.t()) ::
           {:ok, integer()} | {:error, String.t()}
-  def opt_in_status(email, token, app \\ nil) do
+  def retrieve_opt_in_status(email, token, app \\ nil) do
     params = Helpers.build_params([email], token, app)
     Helpers.process_endpoint("APIEmailService.getOptStatus", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#email-create-an-email-template"
-  @spec create_template(
+  @spec create_email_template(
           String.t(),
           String.t(),
           String.t(),
@@ -49,7 +49,7 @@ defmodule Infusionsoft.Endpoints.XML.Email do
           String.t(),
           nil | String.t()
         ) :: {:ok, integer()} | {:error, String.t()}
-  def create_template(
+  def create_email_template(
         name,
         category,
         from,
@@ -95,15 +95,15 @@ defmodule Infusionsoft.Endpoints.XML.Email do
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#email-retrieve-an-email-template"
-  @spec retrieve_template(integer(), String.t(), nil | String.t()) ::
+  @spec retrieve_email_template(integer(), String.t(), nil | String.t()) ::
           {:ok, map()} | {:error, String.t()}
-  def retrieve_template(id, token, app \\ nil) do
+  def retrieve_email_template(id, token, app \\ nil) do
     params = Helpers.build_params([id], token, app)
     Helpers.process_endpoint("APIEmailService.getEmailTemplate", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#email-update-an-email-template"
-  @spec update_template(
+  @spec update_email_template(
           integer(),
           String.t(),
           String.t(),
@@ -119,7 +119,7 @@ defmodule Infusionsoft.Endpoints.XML.Email do
           String.t(),
           nil | String.t()
         ) :: {:ok, integer()} | {:error, String.t()}
-  def update_template(
+  def update_email_template(
         id,
         name,
         category,
@@ -175,7 +175,7 @@ defmodule Infusionsoft.Endpoints.XML.Email do
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#email-send-an-email"
-  @spec send_email(
+  @spec send_an_email(
           [integer()],
           String.t(),
           String.t(),
@@ -188,7 +188,7 @@ defmodule Infusionsoft.Endpoints.XML.Email do
           String.t(),
           nil | String.t()
         ) :: {:ok, boolean()} | {:error, String.t()}
-  def send_email(
+  def send_an_email(
         contact_id_list,
         from,
         to,
