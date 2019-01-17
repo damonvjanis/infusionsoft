@@ -1,4 +1,4 @@
-defmodule Infusionsoft.Endpoints.XML.Weborms do
+defmodule Infusionsoft.Endpoints.XML.Webforms do
   @moduledoc """
   Provides the raw endpoints to Infusionsoft's XML API for Funnel actions.
   """
