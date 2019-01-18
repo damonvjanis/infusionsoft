@@ -65,7 +65,13 @@ defmodule Infusionsoft.Endpoints.XML.Search do
     Helpers.process_endpoint("SearchService.getDefaultQuickSearch", params, token, app)
   end
 
-  @doc "https://developer.infusionsoft.com/docs/xml-rpc/#search-retrieve-a-quick-search-report"
+  @doc """
+  https://developer.infusionsoft.com/docs/xml-rpc/#search-retrieve-a-quick-search-report
+
+  Available options:
+  page - defaults to 0
+  limit - defaults to 1000
+  """
   @spec retrieve_quick_search(
           String.t(),
           integer() | String.t(),
