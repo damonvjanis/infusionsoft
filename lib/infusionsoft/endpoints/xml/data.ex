@@ -14,28 +14,33 @@ defmodule Infusionsoft.Endpoints.XML.Data do
   ascending - defaults to false
   """
   @spec query_a_data_table(
-          map(),
           String.t(),
+          map(),
           [String.t()],
           String.t(),
           nil | String.t(),
           keyword()
         ) :: {:ok, list()} | {:error, String.t()}
-  def query_a_data_table(query, table, return_fields, token, app, opts \\ []) do
+  def query_a_data_table(table, query_data, selected_fields, token, app, opts \\ []) do
     opts = Keyword.merge([page: 0, limit: 1000, order_by: "Id", ascending: false], opts)
     page = Keyword.fetch!(opts, :page)
     limit = Keyword.fetch!(opts, :limit)
     order_by = Keyword.fetch!(opts, :order_by)
-    asc = Keyword.fetch!(opts, :ascending)
+    ascending = Keyword.fetch!(opts, :ascending)
 
     params =
-      Helpers.build_params([table, limit, page, query, return_fields, order_by, asc], token, app)
+      Helpers.build_params(
+        [table, limit, page, query_data, selected_fields, order_by, ascending],
+        token,
+        app
+      )
 
     Helpers.process_endpoint("DataService.query", params, token, app)
   end
 
   @doc """
-  Helper to recurse and get the full number of records instead of one page.
+  This function is not mapped to any Infusionsoft API endpoint. Instead, it is a helper
+  to recurse on `query_a_data_table/6` and get the full number of records instead of one page.
 
   https://developer.infusionsoft.com/docs/xml-rpc/#data-query-a-data-table
 
@@ -44,29 +49,29 @@ defmodule Infusionsoft.Endpoints.XML.Data do
   ascending - defaults to false
   """
   @spec query_all_from_table(
-          map(),
           String.t(),
+          map(),
           [String.t()],
           String.t(),
           nil | String.t(),
           keyword()
         ) :: {:ok, list()} | {:error, String.t()}
-  def query_all_from_table(query, table, r_fields, token, app, opts \\ []) do
-    do_query_all_from_table(query, table, r_fields, token, app, opts, 0, [], [])
+  def query_all_from_table(table, query_data, fields, token, app, opts \\ []) do
+    do_query_all_from_table(table, query_data, fields, token, app, opts, 0, [], [])
   end
 
   defp do_query_all_from_table(_, _, _, _, _, _, count, acc, []) when count != 0 do
     {:ok, acc}
   end
 
-  defp do_query_all_from_table(query, table, r_fields, token, app, opts, count, acc, new) do
+  defp do_query_all_from_table(table, query_data, fields, token, app, opts, count, acc, new) do
     opts = Keyword.merge(opts, page: count, limit: 1000)
 
-    with {:ok, next} <- query_a_data_table(query, table, r_fields, token, app, opts) do
+    with {:ok, next} <- query_a_data_table(table, query_data, fields, token, app, opts) do
       current = acc ++ new
       count = count + 1
       opts = Keyword.merge(opts, page: count, limit: 1000)
-      do_query_all_from_table(query, table, r_fields, token, app, opts, count, current, next)
+      do_query_all_from_table(table, query_data, fields, token, app, opts, count, current, next)
     end
   end
 
@@ -86,53 +91,58 @@ defmodule Infusionsoft.Endpoints.XML.Data do
           nil | String.t(),
           keyword()
         ) :: {:ok, list()} | {:error, String.t()}
-  def find_by_field(value, field, table, return_fields, token, app, opts \\ []) do
+  def find_by_field(table, field_name, field_value, return_fields, token, app, opts \\ []) do
     opts = Keyword.merge([page: 0, limit: 1000], opts)
     page = Keyword.fetch!(opts, :page)
     limit = Keyword.fetch!(opts, :limit)
 
-    params = Helpers.build_params([table, limit, page, field, value, return_fields], token, app)
+    params =
+      Helpers.build_params(
+        [table, limit, page, field_name, field_value, return_fields],
+        token,
+        app
+      )
 
     Helpers.process_endpoint("DataService.findByField", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#data-create-a-record"
-  @spec create_a_record(map(), String.t(), String.t(), nil | String.t()) ::
+  @spec create_a_record(String.t(), map(), String.t(), nil | String.t()) ::
           {:ok, integer()} | {:error, String.t()}
-  def create_a_record(data, table, token, app \\ nil) do
-    params = Helpers.build_params([table, data], token, app)
+  def create_a_record(table, values, token, app \\ nil) do
+    params = Helpers.build_params([table, values], token, app)
     Helpers.process_endpoint("DataService.add", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#data-retrieve-a-record"
-  @spec retrieve_a_record(integer(), String.t(), [String.t()], String.t(), nil | String.t()) ::
+  @spec retrieve_a_record(String.t(), integer(), [String.t()], String.t(), nil | String.t()) ::
           {:ok, map()} | {:error, String.t()}
-  def retrieve_a_record(id, table, fields, token, app \\ nil) do
+  def retrieve_a_record(table, id, fields, token, app \\ nil) do
     params = Helpers.build_params([table, id, fields], token, app)
     Helpers.process_endpoint("DataService.load", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#data-update-a-record"
-  @spec update_a_record(map(), integer(), String.t(), String.t(), nil | String.t()) ::
+  @spec update_a_record(String.t(), integer(), map(), String.t(), nil | String.t()) ::
           {:ok, integer()} | {:error, String.t()}
-  def update_a_record(data, id, table, token, app \\ nil) do
-    params = Helpers.build_params([table, id, data], token, app)
+  def update_a_record(table, record_id, values, token, app \\ nil) do
+    params = Helpers.build_params([table, record_id, values], token, app)
     Helpers.process_endpoint("DataService.update", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#data-delete-a-record"
-  @spec delete_a_record(integer(), String.t(), String.t(), nil | String.t()) ::
+  @spec delete_a_record(String.t(), integer(), String.t(), nil | String.t()) ::
           {:ok, boolean()} | {:error, String.t()}
-  def delete_a_record(id, table, token, app \\ nil) do
+  def delete_a_record(table, id, token, app \\ nil) do
     params = Helpers.build_params([table, id], token, app)
     Helpers.process_endpoint("DataService.delete", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#data-count-a-data-table-s-records"
-  @spec count_records(map(), String.t(), String.t(), nil | String.t()) ::
+  @spec count_records(String.t(), map(), String.t(), nil | String.t()) ::
           {:ok, integer()} | {:error, String.t()}
-  def count_records(data, table, token, app \\ nil) do
-    params = Helpers.build_params([table, data], token, app)
+  def count_records(table, query_data, token, app \\ nil) do
+    params = Helpers.build_params([table, query_data], token, app)
     Helpers.process_endpoint("DataService.count", params, token, app)
   end
 
@@ -145,24 +155,33 @@ defmodule Infusionsoft.Endpoints.XML.Data do
           String.t(),
           nil | String.t()
         ) :: {:ok, integer()} | {:error, String.t()}
-  def create_custom_field(name, table, type, header, token, app \\ nil) do
-    params = Helpers.build_params([table, name, type, header], token, app)
+  def create_custom_field(
+        custom_field_type,
+        display_name,
+        data_type,
+        header_id,
+        token,
+        app \\ nil
+      ) do
+    params =
+      Helpers.build_params([custom_field_type, display_name, data_type, header_id], token, app)
+
     Helpers.process_endpoint("DataService.addCustomField", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#data-update-a-custom-field"
   @spec update_a_custom_field(integer(), map(), String.t(), nil | String.t()) ::
           {:ok, boolean()} | {:error, String.t()}
-  def update_a_custom_field(id, data, token, app \\ nil) do
-    params = Helpers.build_params([id, data], token, app)
+  def update_a_custom_field(custom_field_id, values, token, app \\ nil) do
+    params = Helpers.build_params([custom_field_id, values], token, app)
     Helpers.process_endpoint("DataService.updateCustomField", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#data-retrieve-an-appointment-s-icalendar-file"
   @spec retrieve_appointments_ical(integer(), String.t(), nil | String.t()) ::
           {:ok, String.t()} | {:error, String.t()}
-  def retrieve_appointments_ical(id, token, app \\ nil) do
-    params = Helpers.build_params([id], token, app)
+  def retrieve_appointments_ical(appointment_id, token, app \\ nil) do
+    params = Helpers.build_params([appointment_id], token, app)
     Helpers.process_endpoint("DataService.getAppointmentICal", params, token, app)
   end
 

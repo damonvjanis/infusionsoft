@@ -5,10 +5,10 @@ defmodule Infusionsoft.Endpoints.XML.Funnel do
   alias Infusionsoft.Endpoints.XML.Helpers
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#funnel-achieve-a-goal"
-  @spec achieve_a_goal(integer(), String.t(), String.t(), String.t(), nil | String.t()) ::
+  @spec achieve_a_goal(String.t(), String.t(), integer(), String.t(), nil | String.t()) ::
           {:ok, list()} | {:error, String.t()}
-  def achieve_a_goal(contact_id, integration_name, call_name, token, app \\ nil) do
-    params = Helpers.build_params([integration_name, call_name, contact_id], token, app)
+  def achieve_a_goal(integration, call_name, contact_id, token, app \\ nil) do
+    params = Helpers.build_params([integration, call_name, contact_id], token, app)
     Helpers.process_endpoint("FunnelService.achieveGoal", params, token, app)
   end
 end

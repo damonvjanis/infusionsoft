@@ -14,7 +14,14 @@ defmodule Infusionsoft.Endpoints.XML.Discount do
           String.t(),
           nil | String.t()
         ) :: {:ok, integer()} | {:error, String.t()}
-  def create_order_discount(name, apply_to_commision, percent_or_amt, pay_type, token, app \\ nil) do
+  def create_order_discount(
+        name,
+        apply_discount_to_commision,
+        percent_or_amt,
+        pay_type,
+        token,
+        app \\ nil
+      ) do
     percent_or_amt =
       case percent_or_amt do
         :percent -> 1
@@ -30,7 +37,11 @@ defmodule Infusionsoft.Endpoints.XML.Discount do
       end
 
     params =
-      Helpers.build_params([name, apply_to_commision, percent_or_amt, pay_type], token, app)
+      Helpers.build_params(
+        [name, apply_discount_to_commision, percent_or_amt, pay_type],
+        token,
+        app
+      )
 
     cond do
       is_integer(percent_or_amt) and is_binary(pay_type) ->
@@ -62,16 +73,30 @@ defmodule Infusionsoft.Endpoints.XML.Discount do
           String.t(),
           nil | String.t()
         ) :: {:ok, integer()} | {:error, String.t()}
-  def create_subscription_trial(name, description, days, hide_price, plan_id, token, app \\ nil) do
-    params = Helpers.build_params([name, description, days, hide_price, plan_id], token, app)
+  def create_subscription_trial(
+        name,
+        description,
+        free_trial_days,
+        hide_price,
+        subscription_plan_id,
+        token,
+        app \\ nil
+      ) do
+    params =
+      Helpers.build_params(
+        [name, description, free_trial_days, hide_price, subscription_plan_id],
+        token,
+        app
+      )
+
     Helpers.process_endpoint("DiscountService.addFreeTrial", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#discount-retrieve-a-subscription-s-free-trial"
   @spec retrieve_subscription_trial(integer(), String.t(), nil | String.t()) ::
           {:ok, map()} | {:error, String.t()}
-  def retrieve_subscription_trial(id, token, app \\ nil) do
-    params = Helpers.build_params([id], token, app)
+  def retrieve_subscription_trial(trial_id, token, app \\ nil) do
+    params = Helpers.build_params([trial_id], token, app)
     Helpers.process_endpoint("DiscountService.getFreeTrial", params, token, app)
   end
 
@@ -88,7 +113,7 @@ defmodule Infusionsoft.Endpoints.XML.Discount do
   def create_a_shipping_discount(
         name,
         description,
-        apply_to_commission,
+        apply_discount_to_commission,
         percent_or_amt,
         amt,
         token,
@@ -103,7 +128,7 @@ defmodule Infusionsoft.Endpoints.XML.Discount do
 
     params =
       Helpers.build_params(
-        [name, description, apply_to_commission, percent_or_amt, amt],
+        [name, description, apply_discount_to_commission, percent_or_amt, amt],
         token,
         app
       )
@@ -118,8 +143,8 @@ defmodule Infusionsoft.Endpoints.XML.Discount do
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#discount-retrieve-a-shipping-discount"
   @spec retrieve_a_shipping_discount(integer(), String.t(), nil | String.t()) ::
           {:ok, map()} | {:error, String.t()}
-  def retrieve_a_shipping_discount(id, token, app \\ nil) do
-    params = Helpers.build_params([id], token, app)
+  def retrieve_a_shipping_discount(shipping_discount_id, token, app \\ nil) do
+    params = Helpers.build_params([shipping_discount_id], token, app)
     Helpers.process_endpoint("DiscountService.getShippingTotalDiscount", params, token, app)
   end
 
@@ -137,7 +162,7 @@ defmodule Infusionsoft.Endpoints.XML.Discount do
   def create_product_discount(
         name,
         description,
-        apply_to_commission,
+        apply_discount_to_commission,
         product_id,
         percent_or_amt,
         amt,
@@ -153,7 +178,7 @@ defmodule Infusionsoft.Endpoints.XML.Discount do
 
     params =
       Helpers.build_params(
-        [name, description, apply_to_commission, product_id, percent_or_amt, amt],
+        [name, description, apply_discount_to_commission, product_id, percent_or_amt, amt],
         token,
         app
       )
@@ -168,8 +193,8 @@ defmodule Infusionsoft.Endpoints.XML.Discount do
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#discount-retrieve-a-product-total-discount"
   @spec retrieve_product_discount(integer(), String.t(), nil | String.t()) ::
           {:ok, map()} | {:error, String.t()}
-  def retrieve_product_discount(id, token, app \\ nil) do
-    params = Helpers.build_params([id], token, app)
+  def retrieve_product_discount(product_discount_id, token, app \\ nil) do
+    params = Helpers.build_params([product_discount_id], token, app)
     Helpers.process_endpoint("DiscountService.getProductTotalDiscount", params, token, app)
   end
 
@@ -182,8 +207,17 @@ defmodule Infusionsoft.Endpoints.XML.Discount do
           String.t(),
           nil | String.t()
         ) :: {:ok, integer()} | {:error, String.t()}
-  def create_a_category_discount(name, description, apply_to_commission, amt, token, app \\ nil) do
-    params = Helpers.build_params([name, description, apply_to_commission, amt], token, app)
+  def create_a_category_discount(
+        name,
+        description,
+        apply_discount_to_commission,
+        amt,
+        token,
+        app \\ nil
+      ) do
+    params =
+      Helpers.build_params([name, description, apply_discount_to_commission, amt], token, app)
+
     Helpers.process_endpoint("DiscountService.addCategoryDiscount", params, token, app)
   end
 
@@ -212,8 +246,8 @@ defmodule Infusionsoft.Endpoints.XML.Discount do
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#discount-assign-a-product-to-a-category-discount"
   @spec assign_product_to_discount(integer(), integer(), String.t(), nil | String.t()) ::
           {:ok, map()} | {:error, String.t()}
-  def assign_product_to_discount(id, category_id, token, app \\ nil) do
-    params = Helpers.build_params([id, category_id], token, app)
+  def assign_product_to_discount(id, product_id, token, app \\ nil) do
+    params = Helpers.build_params([id, product_id], token, app)
 
     Helpers.process_endpoint(
       "DiscountService.addCategoryAssignmentToCategoryDiscount",

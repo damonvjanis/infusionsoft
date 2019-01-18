@@ -19,11 +19,12 @@ defmodule Infusionsoft.Endpoints.XML.Contact do
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#contact-create-a-contact-and-check-for-duplicates"
   @spec create_and_check_for_duplicate(map(), String.t(), atom(), nil | String.t()) ::
           {:ok, integer()} | {:error, String.t()}
-  def create_and_check_for_duplicate(data, check_type, token, app \\ nil) do
-    if check_type not in ["Email", "EmailAndName", "EmailAndNameAndCompany"] do
-      {:error, "The check_type needs to be one of Email, EmailAndName, or EmailAndNameAndCompany"}
+  def create_and_check_for_duplicate(data, dupe_check_type, token, app \\ nil) do
+    if dupe_check_type not in ["Email", "EmailAndName", "EmailAndNameAndCompany"] do
+      {:error,
+       "The dupe_check_type needs to be one of Email, EmailAndName, or EmailAndNameAndCompany"}
     else
-      params = Helpers.build_params([data, check_type], token, app)
+      params = Helpers.build_params([data, dupe_check_type], token, app)
       Helpers.process_endpoint("ContactService.addWithDupCheck", params, token, app)
     end
   end
@@ -31,32 +32,32 @@ defmodule Infusionsoft.Endpoints.XML.Contact do
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#contact-retrieve-a-contact"
   @spec retrieve_a_contact(integer(), [String.t()], String.t(), nil | String.t()) ::
           {:ok, map()} | {:error, String.t()}
-  def retrieve_a_contact(id, fields, token, app \\ nil) do
-    params = Helpers.build_params([id, fields], token, app)
+  def retrieve_a_contact(contact_id, selected_fields, token, app \\ nil) do
+    params = Helpers.build_params([contact_id, selected_fields], token, app)
     Helpers.process_endpoint("ContactService.load", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#contact-update-a-contact"
   @spec update_a_contact(integer(), map(), String.t(), nil | String.t()) ::
           {:ok, integer()} | {:error, String.t()}
-  def update_a_contact(id, data, token, app \\ nil) do
-    params = Helpers.build_params([id, data], token, app)
+  def update_a_contact(contact_id, data, token, app \\ nil) do
+    params = Helpers.build_params([contact_id, data], token, app)
     Helpers.process_endpoint("ContactService.update", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#contact-merge-two-contacts"
   @spec merge_contacts(integer(), integer(), String.t(), nil | String.t()) ::
           {:ok, integer()} | {:error, String.t()}
-  def merge_contacts(id, id_duplicate, token, app \\ nil) do
-    params = Helpers.build_params([id, id_duplicate], token, app)
+  def merge_contacts(contact_id, duplicate_contact_id, token, app \\ nil) do
+    params = Helpers.build_params([contact_id, duplicate_contact_id], token, app)
     Helpers.process_endpoint("ContactService.merge", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#contact-search-for-a-contact-by-an-email-address"
-  @spec search_by_email(String.t(), list(), String.t(), nil | String.t()) ::
+  @spec search_by_email(String.t(), [String.t()], String.t(), nil | String.t()) ::
           {:ok, [map()]} | {:error, String.t()}
-  def search_by_email(email, fields, token, app \\ nil) do
-    params = Helpers.build_params([email, fields], token, app)
+  def search_by_email(email, selected_fields, token, app \\ nil) do
+    params = Helpers.build_params([email, selected_fields], token, app)
     Helpers.process_endpoint("ContactService.findByEmail", params, token, app)
   end
 
@@ -102,8 +103,8 @@ defmodule Infusionsoft.Endpoints.XML.Contact do
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#contact-list-linked-contacts"
   @spec list_linked_contacts(integer(), String.t(), nil | String.t()) ::
           {:ok, list()} | {:error, String.t()}
-  def list_linked_contacts(id, token, app \\ nil) do
-    params = Helpers.build_params([id], token, app)
+  def list_linked_contacts(contact_id, token, app \\ nil) do
+    params = Helpers.build_params([contact_id], token, app)
     Helpers.process_endpoint("ContactService.listLinkedContacts", params, token, app)
   end
 

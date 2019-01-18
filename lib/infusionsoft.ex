@@ -88,7 +88,7 @@ defmodule Infusionsoft do
           {:ok, list()} | {:error, String.t()}
   def achieve_goal(contact_id, integration_name, call_name, token, app \\ nil) do
     with {:ok, token} <- check_token(token) do
-      FunnelXML.achieve_a_goal(contact_id, integration_name, call_name, token, app)
+      FunnelXML.achieve_a_goal(integration_name, call_name, contact_id, token, app)
     end
   end
 
@@ -114,7 +114,7 @@ defmodule Infusionsoft do
       with {:ok, token} <- check_token(token),
            {:ok, data} <- Schemas.keys_to_xml(data, token, app, :contacts),
            {:ok, fields} <- Schemas.to_xml(fields, token, app, :contacts) do
-        DataXML.query_all_from_table(data, table, fields, token, app, opts)
+        DataXML.query_all_from_table(table, data, fields, token, app, opts)
       end
     else
       {:error, "Only queries to the \"Contact\" table are currently supported"}

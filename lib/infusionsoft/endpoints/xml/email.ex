@@ -7,16 +7,16 @@ defmodule Infusionsoft.Endpoints.XML.Email do
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#email-opt-in-an-email-address"
   @spec opt_in_an_email_address(String.t(), String.t(), String.t(), nil | String.t()) ::
           {:ok, boolean()} | {:error, String.t()}
-  def opt_in_an_email_address(email, reason, token, app \\ nil) do
-    params = Helpers.build_params([email, reason], token, app)
+  def opt_in_an_email_address(email, opt_in_reason, token, app \\ nil) do
+    params = Helpers.build_params([email, opt_in_reason], token, app)
     Helpers.process_endpoint("APIEmailService.optIn", params, token, app)
   end
 
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#email-opt-out-an-email-address"
   @spec opt_out_an_email_address(String.t(), String.t(), String.t(), nil | String.t()) ::
           {:ok, boolean()} | {:error, String.t()}
-  def opt_out_an_email_address(email, reason, token, app \\ nil) do
-    params = Helpers.build_params([email, reason], token, app)
+  def opt_out_an_email_address(email, opt_out_reason, token, app \\ nil) do
+    params = Helpers.build_params([email, opt_out_reason], token, app)
     Helpers.process_endpoint("APIEmailService.optOut", params, token, app)
   end
 
@@ -50,12 +50,12 @@ defmodule Infusionsoft.Endpoints.XML.Email do
           nil | String.t()
         ) :: {:ok, integer()} | {:error, String.t()}
   def create_email_template(
-        name,
-        category,
-        from,
-        to,
-        cc,
-        bcc,
+        template_name,
+        categories,
+        from_address,
+        to_address,
+        cc_address,
+        bcc_address,
         subject,
         text_body,
         html_body,
@@ -67,12 +67,12 @@ defmodule Infusionsoft.Endpoints.XML.Email do
     params =
       Helpers.build_params(
         [
-          name,
-          category,
-          from,
-          to,
-          cc,
-          bcc,
+          template_name,
+          categories,
+          from_address,
+          to_address,
+          cc_address,
+          bcc_address,
           subject,
           text_body,
           html_body,
@@ -97,8 +97,8 @@ defmodule Infusionsoft.Endpoints.XML.Email do
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#email-retrieve-an-email-template"
   @spec retrieve_email_template(integer(), String.t(), nil | String.t()) ::
           {:ok, map()} | {:error, String.t()}
-  def retrieve_email_template(id, token, app \\ nil) do
-    params = Helpers.build_params([id], token, app)
+  def retrieve_email_template(template_id, token, app \\ nil) do
+    params = Helpers.build_params([template_id], token, app)
     Helpers.process_endpoint("APIEmailService.getEmailTemplate", params, token, app)
   end
 
@@ -120,13 +120,13 @@ defmodule Infusionsoft.Endpoints.XML.Email do
           nil | String.t()
         ) :: {:ok, integer()} | {:error, String.t()}
   def update_email_template(
-        id,
-        name,
-        category,
-        from,
-        to,
-        cc,
-        bcc,
+        template_id,
+        template_name,
+        categories,
+        from_address,
+        to_address,
+        cc_address,
+        bcc_address,
         subject,
         text_body,
         html_body,
@@ -138,13 +138,13 @@ defmodule Infusionsoft.Endpoints.XML.Email do
     params =
       Helpers.build_params(
         [
-          id,
-          name,
-          category,
-          from,
-          to,
-          cc,
-          bcc,
+          template_id,
+          template_name,
+          categories,
+          from_address,
+          to_address,
+          cc_address,
+          bcc_address,
           subject,
           text_body,
           html_body,
@@ -169,8 +169,8 @@ defmodule Infusionsoft.Endpoints.XML.Email do
   @doc "https://developer.infusionsoft.com/docs/xml-rpc/#email-send-an-email-from-a-template"
   @spec send_from_template([integer()], integer(), String.t(), nil | String.t()) ::
           {:ok, boolean()} | {:error, String.t()}
-  def send_from_template(contact_id_list, template_id, token, app \\ nil) do
-    params = Helpers.build_params([contact_id_list, template_id], token, app)
+  def send_from_template(contact_list, template_id, token, app \\ nil) do
+    params = Helpers.build_params([contact_list, template_id], token, app)
     Helpers.process_endpoint("APIEmailService.sendEmail", params, token, app)
   end
 
@@ -189,11 +189,11 @@ defmodule Infusionsoft.Endpoints.XML.Email do
           nil | String.t()
         ) :: {:ok, boolean()} | {:error, String.t()}
   def send_an_email(
-        contact_id_list,
-        from,
-        to,
-        cc,
-        bcc,
+        contact_list,
+        from_address,
+        to_address,
+        cc_addresses,
+        bcc_addresses,
         content_type,
         subject,
         html_body,
@@ -203,7 +203,17 @@ defmodule Infusionsoft.Endpoints.XML.Email do
       ) do
     params =
       Helpers.build_params(
-        [contact_id_list, from, to, cc, bcc, content_type, subject, html_body, text_body],
+        [
+          contact_list,
+          from_address,
+          to_address,
+          cc_addresses,
+          bcc_addresses,
+          content_type,
+          subject,
+          html_body,
+          text_body
+        ],
         token,
         app
       )
