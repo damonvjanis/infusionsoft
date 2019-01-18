@@ -1,6 +1,9 @@
 defmodule Infusionsoft do
   @moduledoc """
-  Functions for interacting with Infusionsoft API.
+  Main module for interacting with Infusionsoft, start here!
+
+  If you want to access the XML-RPC API or the REST API without the caching and conveniences,
+  you can use the other modules outlined in the documentation.
 
   One important thing to note is that if you have multiple custom fields with the same name,
   even if the capitalization is different, things may not work the way you expect.

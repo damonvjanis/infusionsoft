@@ -1,7 +1,7 @@
 defmodule Infusionsoft.Schemas.XML.Contacts do
-  @moduledoc """
-  Contains functions to translate between common names and XML api names for Contacts.
-  """
+  @moduledoc false
+
+  # Contains functions to translate between common names and XML api names for Contacts.
 
   import String, only: [downcase: 1]
   import Infusionsoft.Schemas.Contacts, only: [common_to_xml_downcase: 0, xml_to_common: 0]

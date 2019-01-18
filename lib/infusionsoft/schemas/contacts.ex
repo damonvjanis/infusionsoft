@@ -1,9 +1,9 @@
 defmodule Infusionsoft.Schemas.Contacts do
-  @moduledoc """
-  Contains the basic lists of Common, REST, and XML names for Contacts.
+  @moduledoc false
 
-  Also contains functions to create mappings between name lists and for extracting the name lists.
-  """
+  # Contains the basic lists of Common, REST, and XML names for Contacts.
+  # Also contains functions to create mappings between name lists and for extracting the name lists.
+
 
   @common_names [
     "Shipping Address Street 1",

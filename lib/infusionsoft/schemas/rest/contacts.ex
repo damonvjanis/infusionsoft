@@ -1,7 +1,8 @@
 defmodule Infusionsoft.Schemas.REST.Contacts do
-  @moduledoc """
-  Contains functions to translate between common names and REST api names for Contacts.
-  """
+  @moduledoc false
+
+  # Contains functions to translate between common names and REST api names for Contacts.
+
 
   import String, only: [downcase: 1]
   import Infusionsoft.Schemas.Contacts, only: [common_to_rest_downcase: 0, rest_to_common: 0]
