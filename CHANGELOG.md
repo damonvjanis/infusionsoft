@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+0.5.0
+-----
+
+* Fixed a problem with `query_table/5` where the raw XML names were returned instead of the display names.
+
 
 0.4.0
 -----
