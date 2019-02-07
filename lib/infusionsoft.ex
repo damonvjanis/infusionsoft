@@ -116,8 +116,9 @@ defmodule Infusionsoft do
     if table == "Contact" do
       with {:ok, token} <- check_token(token),
            {:ok, data} <- Schemas.keys_to_xml(data, token, app, :contacts),
-           {:ok, fields} <- Schemas.to_xml(fields, token, app, :contacts) do
-        DataXML.query_all_from_table(table, data, fields, token, app, opts)
+           {:ok, fields} <- Schemas.to_xml(fields, token, app, :contacts),
+           {:ok, list} <- DataXML.query_all_from_table(table, data, fields, token, app, opts) do
+        Enum.map(list, &Schemas.keys_from_xml(&1, token, app, :contacts))
       end
     else
       {:error, "Only queries to the \"Contact\" table are currently supported"}
