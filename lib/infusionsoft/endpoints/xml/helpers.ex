@@ -26,7 +26,7 @@ defmodule Infusionsoft.Endpoints.XML.Helpers do
   end
 
   defp send_request(request, token, nil) do
-    case HTTPoison.post(@url, request, create_headers(token)) do
+    case HTTPoison.post(@url, request, build_headers(token)) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end
@@ -39,9 +39,7 @@ defmodule Infusionsoft.Endpoints.XML.Helpers do
     end
   end
 
-  defp create_headers(token) do
-    [{"Authorization", "Bearer " <> token}]
-  end
+  defp build_headers(token), do: [{"Authorization", "Bearer " <> token}]
 
   defp decode_body(body) when body == "<h1>Developer Inactive</h1>" do
     {:error, "Received the following error from Infusionsoft: Developer Inactive"}
