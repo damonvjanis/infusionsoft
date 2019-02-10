@@ -28,6 +28,7 @@ defmodule Infusionsoft.MixProject do
     [
       {:xmlrpc, "~> 1.0"},
       {:httpoison, "~> 1.0"},
+      {:jason, "~> 1.0"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end
