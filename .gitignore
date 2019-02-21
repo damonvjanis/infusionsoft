@@ -24,3 +24,6 @@ infusionsoft-*.tar
 
 # Ignore elixir_ls builds and dialyzer files
 .elixir_ls/
+
+# Ignore to-do file
+to_do.txt
