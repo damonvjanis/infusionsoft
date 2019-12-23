@@ -21,6 +21,7 @@ Big milestone reached! The functions in `Infusionsoft.Endpoints.XML.<submodules>
 - To obtain an OAuth token, read Infusionsoft's guide [here](https://developer.infusionsoft.com/getting-started-oauth-keys/).
 - Contact custom fields are automatically cached and refreshed every 15 minutes once you've used a call that requires accessing custom fields. This allows the developer to use the display name for custom fields, instead of worrying about what the exact API names are.
 - All of the XML endpoints have been wrapped in the lower level `Infusionsoft.Endpoints.XML` modules. You have to use the XML field names when you access these modules, but it provides a lot of raw access. They work with both OAuth tokens (omit or pass `nil` for the `app` argument) or with legacy encrypted keys (use the key for the `token` argument and the app name like `ab123` for the `app` argument).
+- A few REST endpoints for contacts have been wrapped in the lower level `Infusionsoft.Endpoints.REST.Contact` module.
 
 ### Goals yet to be accomplished:
 
@@ -38,7 +39,7 @@ by adding `infusionsoft` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:infusionsoft, "~> 0.5.0"}
+    {:infusionsoft, "~> 0.6.0"}
   ]
 end
 ```
