@@ -26,14 +26,14 @@ defmodule Infusionsoft.Endpoints.XML.Helpers do
   end
 
   defp send_request(request, token, nil) do
-    case HTTPoison.post(@url, request, build_headers(token)) do
+    case Mojito.post(@url, build_headers(token), request) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end
   end
 
   defp send_request(request, _token, app) do
-    case HTTPoison.post("https://#{app}.infusionsoft.com/api/xmlrpc", request) do
+    case Mojito.post("https://#{app}.infusionsoft.com/api/xmlrpc", [], request) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end

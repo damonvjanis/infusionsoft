@@ -64,7 +64,6 @@ defmodule Infusionsoft.Caches.Companies do
           # With these named errors, don't remove the token from state
           {:error, "timeout"} -> state[token]
           {:error, "closed"} -> state[token]
-          {:error, "connect_timeout"} -> state[token]
           _ -> nil
         end
       end

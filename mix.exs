@@ -27,7 +27,7 @@ defmodule Infusionsoft.MixProject do
   defp deps do
     [
       {:xmlrpc, "~> 1.0"},
-      {:httpoison, "~> 1.0"},
+      {:mojito, "~> 0.6"},
       {:jason, "~> 1.0"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]

@@ -14,14 +14,14 @@ defmodule Infusionsoft.Endpoints.REST.Helpers do
   end
 
   defp send_request(url, :get, nil, headers) do
-    case HTTPoison.get(url, headers) do
+    case Mojito.get(url, headers) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end
   end
 
   defp send_request(url, :patch, body, headers) do
-    case HTTPoison.patch(url, body, headers) do
+    case Mojito.patch(url, headers, body) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end
