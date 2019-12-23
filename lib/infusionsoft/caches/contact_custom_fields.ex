@@ -17,10 +17,11 @@ defmodule Infusionsoft.Caches.ContactCustomFields do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
-  @spec lookup(atom(), String.t(), String.t(), nil | String.t()) ::
+  @doc "The first argument can be either the custom field Id, Name, or Label."
+  @spec lookup(String.t() | integer(), String.t(), nil | String.t()) ::
           {:ok, map()} | {:error, binary()}
-  def lookup(pid, name, token, app) do
-    GenServer.call(pid, {:lookup, token, app, name})
+  def lookup(identifier, token, app \\ nil) do
+    GenServer.call(__MODULE__, {:lookup, token, app, identifier})
   end
 
   # Server API
@@ -34,13 +35,13 @@ defmodule Infusionsoft.Caches.ContactCustomFields do
     end
   end
 
-  def handle_call({:lookup, token, app, name}, _from, state) do
+  def handle_call({:lookup, token, app, identifier}, _from, state) do
     case state[token] do
       nil ->
         with {:ok, fields} <- get_fields(token, app) do
           state = Map.put(state, token, %{token: token, app: app, custom_fields: fields})
 
-          {:reply, check_field(fields, name), state}
+          {:reply, check_field(fields, identifier), state}
         else
           {:error, error} ->
             {:reply, {:error, "Failed to get contact custom fields with error: #{error}"}, state}
@@ -50,7 +51,7 @@ defmodule Infusionsoft.Caches.ContactCustomFields do
         end
 
       group ->
-        {:reply, check_field(group.custom_fields, name), state}
+        {:reply, check_field(group.custom_fields, identifier), state}
     end
   end
 
@@ -94,11 +95,16 @@ defmodule Infusionsoft.Caches.ContactCustomFields do
     query = %{"FormID" => -1}
     return_fields = ["GroupId", "Id", "Label", "Name"]
 
-    with {:ok, fields} <-
-           Data.query_a_data_table("DataFormField", query, return_fields, token, app) do
-      # Duplicate the field list to be grouped by Name and again by Label
-      # so that access is available translating from Common to XML and vice versa
-      {:ok, Map.merge(group_by_name(fields), group_by_label(fields))}
+    response = Data.query_a_data_table("DataFormField", query, return_fields, token, app)
+
+    with {:ok, fields} <- response do
+      # Duplicate the field list by Name, Label, and Id so that access is
+      # available translating from Common to XML / REST, and vice versa
+      fields_by_name = group_by_name(fields)
+      fields_by_label = group_by_label(fields)
+      fields_by_id = group_by_id(fields)
+
+      {:ok, fields_by_name |> Map.merge(fields_by_label) |> Map.merge(fields_by_id)}
     end
   end
 
@@ -111,15 +117,34 @@ defmodule Infusionsoft.Caches.ContactCustomFields do
     Enum.group_by(fields, fn f -> String.downcase(f["Label"]) end)
   end
 
-  defp check_field(custom_fields, name) do
+  defp group_by_id(fields) do
+    Enum.group_by(fields, fn f -> f["Id"] end)
+  end
+
+  defp check_field(custom_fields, identifier)
+
+  defp check_field(custom_fields, id) when is_integer(id) do
+    case custom_fields[id] do
+      nil -> {:error, ~s|No contact custom field with id #{id} exists|}
+      [field] -> {:ok, field}
+      _any -> {:error, ~s|Field with id #{id} exists more than once|}
+    end
+  end
+
+  defp check_field(custom_fields, name) when is_binary(name) do
     case custom_fields[String.downcase(name)] do
       nil -> {:error, ~s|No contact custom field "#{name}" exists|}
       [field] -> {:ok, field}
       _any -> {:error, ~s|Field "#{name}" exists more than once|}
     end
   end
+
+  defp check_field(_, name) do
+    {:error, "Invalid type: #{inspect(name)}"}
+  end
 end
 
+# TODO
 # The cache should eventually accomodate multiple custom fields with the same name, when they have
-# a different Tab and Header. For now, we will return an error if a custom field is looked up
+# a different Tab (Group). For now, we will return an error if a custom field is looked up
 # and there are multiple custom fields with the same display name.

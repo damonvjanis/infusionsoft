@@ -26,4 +26,21 @@ defmodule Infusionsoft.Endpoints.REST.Contact do
     path = "/contacts" <> Helpers.build_params(params)
     Helpers.process_endpoint(path, :get, token)
   end
+
+  @spec retrieve_a_contact(integer(), String.t(), [String.t()] | nil) ::
+          {:ok, map()} | {:error, any()}
+  def retrieve_a_contact(id, token, params \\ nil) do
+    path = "/contacts/#{id}" <> Helpers.build_params(%{"optional_properties" => params})
+    Helpers.process_endpoint(path, :get, token)
+  end
+
+  @spec update_a_contact(integer(), map(), String.t(), [String.t()] | nil) ::
+          {:ok, map()} | {:error, any()}
+  def update_a_contact(id, fields, token, params \\ nil) do
+    path = "/contacts/#{id}" <> Helpers.build_params(%{"update_mask" => params})
+
+    with body <- Jason.encode!(fields) do
+      Helpers.process_endpoint(path, :patch, token, body)
+    end
+  end
 end

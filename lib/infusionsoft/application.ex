@@ -6,6 +6,7 @@ defmodule Infusionsoft.Application do
   def start(_type, _args) do
     children = [
       Infusionsoft.Caches.ContactCustomFields,
+      Infusionsoft.Caches.Companies,
     ]
 
     opts = [strategy: :one_for_one, name: Infusionsoft.Supervisor]

@@ -20,6 +20,13 @@ defmodule Infusionsoft.Endpoints.REST.Helpers do
     end
   end
 
+  defp send_request(url, :patch, body, headers) do
+    case HTTPoison.patch(url, body, headers) do
+      {:ok, response} -> decode_body(response.body)
+      {:error, %{reason: reason}} -> {:error, reason}
+    end
+  end
+
   defp send_request(_url, :get, body, _headers) do
     {:error, "Body not needed in GET request: #{body}"}
   end
@@ -28,7 +35,9 @@ defmodule Infusionsoft.Endpoints.REST.Helpers do
     {:error, "#{method |> to_string() |> String.upcase()} method not implemented"}
   end
 
-  defp build_headers(token), do: [@accept_json, @accept_all, {"Authorization", "Bearer #{token}"}]
+  defp build_headers(token), do: [@accept_json, @accept_all, auth(token), @content_json]
+
+  defp auth(token), do: {"Authorization", "Bearer #{token}"}
 
   defp decode_body(body) when body == "<h1>Developer Inactive</h1>" do
     {:error, "Received the following error from Infusionsoft: Developer Inactive"}
