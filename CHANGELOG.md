@@ -1,5 +1,14 @@
 CHANGELOG
 =========
+0.6.0
+-----
+
+* Better translation for REST
+
+* New REST endpoints for Contacts
+
+* Switched out HTTPoison for Mojito
+
 0.5.0
 -----
 
