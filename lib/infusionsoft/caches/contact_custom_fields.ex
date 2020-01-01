@@ -75,6 +75,11 @@ defmodule Infusionsoft.Caches.ContactCustomFields do
     {:noreply, state}
   end
 
+  # Ignores when Mojito sends info messages about connections closed
+  def handle_info(_, state) do
+    {:noreply, state}
+  end
+
   defp schedule_initial_job() do
     # In 5 seconds
     Process.send_after(self(), :refresh, 5_000)

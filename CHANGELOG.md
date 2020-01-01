@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+0.6.2
+-----
+* Fixed a bug where genserver would break when Mojito sent message back about closed connection.
+
 0.6.1
 -----
 * Fixed a bug with the return value of query_table being a list of :ok tuples.
