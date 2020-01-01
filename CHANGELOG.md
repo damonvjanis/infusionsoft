@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+0.6.1
+-----
+* Fixed a bug with the return value of query_table being a list of :ok tuples.
+
 0.6.0
 -----
 
