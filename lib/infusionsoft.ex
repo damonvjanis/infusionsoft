@@ -184,7 +184,7 @@ defmodule Infusionsoft do
            list = Enum.map(raw_list, &Schemas.keys_from_xml(&1, token, app, :contacts)),
            {nil, final_list} <-
              {Enum.find(list, &(elem(&1, 0) == :error)), Enum.map(list, &elem(&1, 1))} do
-        final_list
+        {:ok, final_list}
       else
         {error, _} -> error
       end
