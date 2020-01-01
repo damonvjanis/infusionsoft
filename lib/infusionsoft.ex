@@ -180,8 +180,13 @@ defmodule Infusionsoft do
       with {:ok, token} <- check_token(token),
            {:ok, data} <- Schemas.keys_to_xml(data, token, app, :contacts),
            {:ok, fields} <- Schemas.to_xml(fields, token, app, :contacts),
-           {:ok, list} <- DataXML.query_all_from_table(table, data, fields, token, app, opts) do
-        Enum.map(list, &Schemas.keys_from_xml(&1, token, app, :contacts))
+           {:ok, raw_list} <- DataXML.query_all_from_table(table, data, fields, token, app, opts),
+           list = Enum.map(raw_list, &Schemas.keys_from_xml(&1, token, app, :contacts)),
+           {nil, final_list} <-
+             {Enum.find(list, &(elem(&1, 0) == :error)), Enum.map(list, &elem(&1, 1))} do
+        final_list
+      else
+        {error, _} -> error
       end
     else
       {:error, "Only queries to the \"Contact\" table are currently supported"}
