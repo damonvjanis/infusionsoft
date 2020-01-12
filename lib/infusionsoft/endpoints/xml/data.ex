@@ -20,7 +20,7 @@ defmodule Infusionsoft.Endpoints.XML.Data do
           String.t(),
           nil | String.t(),
           keyword()
-        ) :: {:ok, list(map)} | {:error, String.t()}
+        ) :: {:ok, list(map)} | {:error, any()}
   def query_a_data_table(table, query_data, selected_fields, token, app, opts \\ []) do
     opts = Keyword.merge([page: 0, limit: 1000, order_by: "Id", ascending: false], opts)
     page = Keyword.fetch!(opts, :page)
