@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+0.6.3
+-----
+* Updated typespecs to fix warnings
+
 0.6.2
 -----
 * Fixed a bug where genserver would break when Mojito sent message back about closed connection.
