@@ -25,14 +25,14 @@ defmodule Infusionsoft.Endpoints.XML.Helpers do
     %XMLRPC.MethodCall{method_name: name, params: params}
   end
 
-  defp send_request(request, token, nil) do
+  def send_request(request, token, nil) do
     case Mojito.post(@url, build_headers(token), request) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end
   end
 
-  defp send_request(request, _token, app) do
+  def send_request(request, _token, app) do
     case Mojito.post("https://#{app}.infusionsoft.com/api/xmlrpc", [], request) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
@@ -54,8 +54,8 @@ defmodule Infusionsoft.Endpoints.XML.Helpers do
 
   @spec build_params(list() | nil, String.t(), nil | String.t()) :: list()
   def build_params(params, token, app)
-  def build_params(nil, _token, nil), do: [""]
-  def build_params(params, _token, nil), do: ["" | params]
+  def build_params(nil, token, nil), do: [token]
+  def build_params(params, token, nil), do: [token | params]
   def build_params(nil, token, _app), do: [token]
   def build_params(params, token, _app), do: [token | params]
 end
