@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+0.6.4
+-----
+* Fixed issue where Infusionsoft XML api was failing all calls because it stopped accepting an empty string for the token.
+
 0.6.3
 -----
 * Updated typespecs to fix warnings
