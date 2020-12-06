@@ -14,14 +14,14 @@ defmodule Infusionsoft.Endpoints.REST.Helpers do
   end
 
   defp send_request(url, :get, nil, headers) do
-    case Finch.build(:get, url, headers) |> Finch.request(MyFinch) do
+    case Finch.build(:get, url, headers) |> Finch.request(InfusionsoftFinch) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end
   end
 
   defp send_request(url, :patch, body, headers) do
-    case Finch.build(:patch, url, headers, body) |> Finch.request(MyFinch) do
+    case Finch.build(:patch, url, headers, body) |> Finch.request(InfusionsoftFinch) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end

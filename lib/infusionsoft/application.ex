@@ -7,7 +7,7 @@ defmodule Infusionsoft.Application do
     children = [
       Infusionsoft.Caches.ContactCustomFields,
       Infusionsoft.Caches.Companies,
-      {Finch, name: MyFinch}
+      {Finch, name: InfusionsoftFinch}
     ]
 
     opts = [strategy: :one_for_one, name: Infusionsoft.Supervisor]

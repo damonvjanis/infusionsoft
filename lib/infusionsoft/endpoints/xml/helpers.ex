@@ -26,7 +26,7 @@ defmodule Infusionsoft.Endpoints.XML.Helpers do
   end
 
   def send_request(request, token, nil) do
-    case Finch.build(:post, @url, build_headers(token), request) |> Finch.request(MyFinch) do
+    case Finch.build(:post, @url, build_headers(token), request) |> Finch.request(InfusionsoftFinch) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end
@@ -34,7 +34,7 @@ defmodule Infusionsoft.Endpoints.XML.Helpers do
 
   def send_request(request, _token, app) do
     url = "https://#{app}.infusionsoft.com/api/xmlrpc"
-    case Finch.build(:post, url, [], request) |> Finch.request(MyFinch) do
+    case Finch.build(:post, url, [], request) |> Finch.request(InfusionsoftFinch) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end
