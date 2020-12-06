@@ -26,14 +26,15 @@ defmodule Infusionsoft.Endpoints.XML.Helpers do
   end
 
   def send_request(request, token, nil) do
-    case Mojito.post(@url, build_headers(token), request) do
+    case Finch.build(:post, @url, build_headers(token), request) |> Finch.request(MyFinch) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end
   end
 
   def send_request(request, _token, app) do
-    case Mojito.post("https://#{app}.infusionsoft.com/api/xmlrpc", [], request) do
+    url = "https://#{app}.infusionsoft.com/api/xmlrpc"
+    case Finch.build(:post, url, [], request) |> Finch.request(MyFinch) do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end

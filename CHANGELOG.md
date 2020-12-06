@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+0.7.0
+-----
+* Switched HTTP client from Mojito to Finch because of intermittent timeouts
+
 0.6.4
 -----
 * Fixed issue where Infusionsoft XML api was failing all calls because it stopped accepting an empty string for the token.

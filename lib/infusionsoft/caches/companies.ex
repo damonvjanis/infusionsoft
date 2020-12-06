@@ -75,7 +75,7 @@ defmodule Infusionsoft.Caches.Companies do
     {:noreply, state}
   end
 
-  # Ignores when Mojito sends info messages about connections closed
+  # Ignores when HTTP clients send info messages about connections closed
   def handle_info(_, state) do
     {:noreply, state}
   end

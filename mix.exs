@@ -4,7 +4,7 @@ defmodule Infusionsoft.MixProject do
   def project do
     [
       app: :infusionsoft,
-      version: "0.6.4",
+      version: "0.7.0",
       elixir: "~> 1.2",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -27,7 +27,7 @@ defmodule Infusionsoft.MixProject do
   defp deps do
     [
       {:xmlrpc, "~> 1.0"},
-      {:mojito, "~> 0.7"},
+      {:finch, "~> 0.5"},
       {:jason, "~> 1.0"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
