@@ -1,5 +1,17 @@
 CHANGELOG
 =========
+0.8.1
+* The more extensive changes in 0.8.0 have been reverted in favor of more surgical changes
+* Better testing and validation to make sure the changes acutally work
+
+0.8.0
+-----
+* Removed support for legacy API keys in response to Infusionsoft deprecating them (see https://developer.infusionsoft.com/legacy-key-deprecation/)
+* Moved minimum version of Elixir to 1.9
+* Moved away from Mix Config and implmented Config
+* Updated locked dependencies
+* Updated README to reflect that the project probably won't see updates unless they're requested
+
 0.7.0
 -----
 * Switched HTTP client from Mojito to Finch because of intermittent timeouts

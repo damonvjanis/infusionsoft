@@ -1,17 +1,17 @@
 defmodule Infusionsoft.Endpoints.XML.Helpers do
   @moduledoc false
 
-  @url "https://api.infusionsoft.com/crm/xmlrpc/v1"
+  @url "https://api.infusionsoft.com/crm/xmlrpc"
 
   @spec process_endpoint(String.t(), [any()], String.t(), nil | String.t()) ::
           {:ok, any()} | {:error, String.t()}
-  def process_endpoint(name, params, token, app) do
+  def process_endpoint(name, params, token, _app) do
     response =
       name
       |> method_call(params)
       |> XMLRPC.encode()
       |> case do
-        {:ok, request} -> send_request(request, token, app)
+        {:ok, request} -> send_request(request, token)
         {:error, error} -> {:error, error}
       end
 
@@ -25,16 +25,11 @@ defmodule Infusionsoft.Endpoints.XML.Helpers do
     %XMLRPC.MethodCall{method_name: name, params: params}
   end
 
-  def send_request(request, token, nil) do
-    case Finch.build(:post, @url, build_headers(token), request) |> Finch.request(InfusionsoftFinch) do
-      {:ok, response} -> decode_body(response.body)
-      {:error, %{reason: reason}} -> {:error, reason}
-    end
-  end
-
-  def send_request(request, _token, app) do
-    url = "https://#{app}.infusionsoft.com/api/xmlrpc"
-    case Finch.build(:post, url, [], request) |> Finch.request(InfusionsoftFinch) do
+  def send_request(request, token) do
+    :post
+    |> Finch.build(@url, build_headers(token), request)
+    |> Finch.request(InfusionsoftFinch)
+    |> case do
       {:ok, response} -> decode_body(response.body)
       {:error, %{reason: reason}} -> {:error, reason}
     end

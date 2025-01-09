@@ -1,10 +1,13 @@
 # Infusionsoft
 
+### Note
+This project hasn't seen a lot of active development because I haven't needed additional functionality and nobody else that I know of is using the package. Please reach out at damonvjanis@gmail.com though, I'm happy to support it if anyone starts using it!
+
 ## Introduction
 
 So much more than a wrapper!
 
-The Infusionsoft API is robust but there are a lot of quirks that can trip you up. Most significantly, Infusionsoft offers two API's instead of one: a newer REST API and an older XML-RPC API. Unfortunately, there are wildly significant differences between these API's in what data is available, and even field names. As an example, the contact field “First Name” that you see in the application has a backend name of “FirstName” in the XML API and a backend name of “given_name” in the REST API.
+The Infusionsoft API is robust but there are a lot of quirks that can trip you up. Most significantly, Infusionsoft offers two API's instead of one: a newer REST API and an older XML-RPC API. Unfortunately, there are wildly significant differences between these APIs in what data is available, and even field names. As an example, the contact field “First Name” that you see in the application has a backend name of “FirstName” in the XML API and a backend name of “given_name” in the REST API.
 
 This package intends to abstract the things that make the Infusionsoft API challenging to work with, and provide a unified interface for developers so that developers can leverage both the XML API and the REST API without being concerned with the details of each.
 
@@ -17,10 +20,11 @@ Big milestone reached! The functions in `Infusionsoft.Endpoints.XML.<submodules>
 ### Currently available:
 
 - Through the main module, `Infusionsoft`, there are a handful of functions available to work with contacts, fire API goals, and query data tables (one of the most useful).
-- OAuth2 tokens are supported and are the recommended mode of authentication. If you want to use legacy API keys, you can do so on functions that accept an `app` argument. Just use the encrypted key from Infusionsoft for `token`, and use the Infusionsoft application name, like `ab123` for `app`.
+- OAuth2 tokens are supported and are the recommended mode of authentication. In addition, Personal Access Tokens and Service Account Keys can be used. Legacy API keys are no longer supported (see [here](https://developer.infusionsoft.com/pat-and-sak/)).
 - To obtain an OAuth token, read Infusionsoft's guide [here](https://developer.infusionsoft.com/getting-started-oauth-keys/).
+- To obtain a Personal Access Token or Service Account Key, see [here](https://developer.infusionsoft.com/pat-and-sak/).
 - Contact custom fields are automatically cached and refreshed every 15 minutes once you've used a call that requires accessing custom fields. This allows the developer to use the display name for custom fields, instead of worrying about what the exact API names are.
-- All of the XML endpoints have been wrapped in the lower level `Infusionsoft.Endpoints.XML` modules. You have to use the XML field names when you access these modules, but it provides a lot of raw access. They work with both OAuth tokens (omit or pass `nil` for the `app` argument) or with legacy encrypted keys (use the key for the `token` argument and the app name like `ab123` for the `app` argument).
+- All of the XML endpoints have been wrapped in the lower level `Infusionsoft.Endpoints.XML` modules. You have to use the XML field names when you access these modules, but it provides a lot of raw access. They work with OAuth tokens and Personal Access Tokens and Service Account Keys.
 - A few REST endpoints for contacts have been wrapped in the lower level `Infusionsoft.Endpoints.REST.Contact` module.
 
 ### Goals yet to be accomplished:
@@ -39,7 +43,7 @@ by adding `infusionsoft` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:infusionsoft, "~> 0.6.0"}
+    {:infusionsoft, "~> 0.8.0"}
   ]
 end
 ```

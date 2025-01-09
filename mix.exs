@@ -4,8 +4,8 @@ defmodule Infusionsoft.MixProject do
   def project do
     [
       app: :infusionsoft,
-      version: "0.7.0",
-      elixir: "~> 1.2",
+      version: "0.8.1",
+      elixir: "~> 1.9",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       description: description(),
@@ -29,7 +29,7 @@ defmodule Infusionsoft.MixProject do
       {:xmlrpc, "~> 1.0"},
       {:finch, "~> 0.5"},
       {:jason, "~> 1.0"},
-      {:ex_doc, "~> 0.19", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.36", only: :dev, runtime: false}
     ]
   end
 
