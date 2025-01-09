@@ -45,9 +45,6 @@ defmodule Infusionsoft.Caches.Companies do
         else
           {:error, error} ->
             {:reply, {:error, "Failed to get companies with error: #{error}"}, state}
-
-          _ ->
-            {:reply, {:error, "Unexpected error occurred getting companies"}, state}
         end
 
       group ->

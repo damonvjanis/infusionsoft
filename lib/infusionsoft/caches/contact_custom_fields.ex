@@ -45,9 +45,6 @@ defmodule Infusionsoft.Caches.ContactCustomFields do
         else
           {:error, error} ->
             {:reply, {:error, "Failed to get contact custom fields with error: #{error}"}, state}
-
-          _ ->
-            {:reply, {:error, "Unexpected error occurred getting contact custom fields"}, state}
         end
 
       group ->
